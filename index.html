@@ -326,7 +326,7 @@
             border: 1px solid rgba(129, 140, 248, 0.4);
             border-radius: 0.75rem;
             width: 90%;
-            max-width: 650px; /* Slightly wider for more options */
+            max-width: 650px; 
             color: #D1D5DB;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
@@ -335,7 +335,7 @@
         .modal-content select, .modal-content input[type="text"], .modal-content textarea {
             width: 100%;
             padding: 0.75rem;
-            margin-bottom: 1.25rem; /* Increased spacing */
+            margin-bottom: 1.25rem; 
             border-radius: 0.375rem;
             border: 1px solid rgba(129, 140, 248, 0.4);
             background-color: rgba(40, 40, 60, 0.8);
@@ -574,7 +574,9 @@
 
             <section id="aiHelper" class="content-section">
                 <h2 class="text-3xl font-semibold mb-6">✨ AI Skincare Helper</h2>
-                <p class="mb-8 text-lg leading-relaxed">Get a personalized skincare routine suggestion from our AI! Please provide some information about your skin and concerns. This tool provides general suggestions and is not a substitute for professional dermatological advice.</p>
+                <p class="mb-4 text-lg leading-relaxed">Get a personalized skincare routine suggestion from our AI! Please provide some information about your skin and concerns.</p>
+                <p class="mb-8 text-sm text-indigo-400"><strong>Important:</strong> The AI Helper requires an API key to function when deployed. If you are seeing errors, this might be the cause. For production use, a backend proxy is recommended for API key security.</p>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                     <div>
                         <label for="aiSkinType" class="block text-base font-medium mb-2 text-indigo-300">Your Skin Type:</label>
@@ -1103,10 +1105,7 @@
                 }
             });
             
-            // If scrolled to the very top, 'home' should be active.
-            // The hero section (#home) is the first child of main, so its offsetTop is 0 relative to main.
-            // Body padding already accounts for nav height.
-            if (window.pageYOffset < (document.getElementById('understanding').offsetTop - navHeight - 50) ) { // Check if above the 'understanding' section
+            if (window.pageYOffset < (document.getElementById('understanding').offsetTop - navHeight - 50) ) { 
                  currentActive = 'home';
             }
 
@@ -1140,9 +1139,8 @@
                 const navHeight = navElement ? navElement.offsetHeight : 0;
                 let scrollTargetPosition = targetSection.offsetTop - navHeight - 20;
                 
-                if (targetId === 'home') { // Home is the first section in main, scroll to top of main
-                    scrollTargetPosition = mainElement.offsetTop - navHeight -20;
-                     if (scrollTargetPosition < 0) scrollTargetPosition = 0; // Prevent negative scroll
+                if (targetId === 'home') { 
+                    scrollTargetPosition = 0; 
                 }
                 
                 window.scrollTo({
@@ -1421,9 +1419,9 @@ Primary Pigmentation Concern: ${concern}
                 }
                 prompt += `
 The routine should focus on addressing the pigmentation concern while being suitable for the user's skin type.
-Suggest general product types (e.g., "gentle cleanser", "hydrating serum with Niacinamide", "broad-spectrum SPF 50 sunscreen") rather than specific brands.
+Suggest general product types (e.g., "gentle cleanser", "hydrating serum with Niacinamide", "broad-spectrum SPF 50 sunscreen etc.") rather than specific brands.
 If possible, incorporate some of these known effective ingredients for pigmentation, ensuring they are appropriate for the skin type and concern: ${Object.keys(ingredientData).join(', ')}.
-Provide the routine in a clear, step-by-step format for morning and evening. Use markdown for formatting, like using '#' for headers, '*' for bullet points and '**' for bold.
+Provide the routine in a clear, step-by-step format for morning and evening. Use markdown for formatting, like using '#' for headers, '*' for bullet points and '**' for bold. Make the response just to the point and easy to understand but not overwhelming yet interesting
 
 Example Output Format:
 ### Morning Routine
@@ -1447,7 +1445,7 @@ Example Output Format:
                     let chatHistory = [];
                     chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                     const payload = { contents: chatHistory };
-                    const apiKey = ""; 
+                    const apiKey = "AIzaSyBnlG3i_BSah-Xq4iRk6cBZhIUqgQYW9yU"; // API Key inserted here
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                     const response = await fetch(apiUrl, {
@@ -1459,7 +1457,14 @@ Example Output Format:
                     if (!response.ok) {
                         const errorData = await response.json();
                         console.error("API Error:", errorData);
-                        throw new Error(`API request failed with status ${response.status}: ${errorData.error?.message || response.statusText}`);
+                        let errorMessage = `API request failed with status ${response.status}`;
+                        if (errorData.error && errorData.error.message) {
+                            errorMessage += `: ${errorData.error.message}`;
+                        }
+                        if (response.status === 403) {
+                            errorMessage += " This often means the API key is invalid, not enabled for this API, or has billing issues.";
+                        }
+                        throw new Error(errorMessage);
                     }
 
                     const result = await response.json();
