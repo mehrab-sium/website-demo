@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to Skin Pigmentation & Treatments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+            /* scroll-padding-top will be set by JS */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #D1D5DB; 
+            position: relative; 
+            min-height: 100vh;
+            background: linear-gradient(145deg, #0f0c29 0%, #1a2a6c 50%, #004e5f 100%); 
+            overflow-x: hidden;
+            /* padding-top will be set by JS to accommodate the fixed nav */
+        }
+        body::before { 
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1920&q=80'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(16px) brightness(0.4) saturate(1.2); 
+            opacity: 0.35; 
+            z-index: -1; 
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
+        @keyframes slideInLeft { from { opacity:0; transform: translateX(-30px); } to { opacity:1; transform: translateX(0); } }
+
+        .initial-load-brand { animation: slideInLeft 0.8s 0.2s ease-out forwards; opacity:0; }
+        .initial-load-nav-item { animation: fadeInUp 0.6s ease-out forwards; opacity:0; }
+        .initial-load-cta { animation: slideInRight 0.8s 0.2s ease-out forwards; opacity:0; }
+        .scroll-fade-in { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+        .scroll-fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        nav {
+            background-color: rgba(17, 24, 39, 0.85); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border-bottom: 1px solid rgba(79, 70, 229, 0.35); 
+            padding: 0.75rem 0; 
+            position: fixed; 
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 50; 
+        }
+        
+        .brand-in-nav {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.35rem; 
+            font-weight: 700;
+            color: #E0E7FF; 
+            letter-spacing: 0.03em;
+        }
+
+        .nav-links-container {
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            flex-grow: 1; 
+        }
+
+        .nav-button {
+            padding: 0.6rem 1.1rem; 
+            border-radius: 0.375rem; 
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            cursor: pointer;
+            font-weight: 500; 
+            font-size: 0.9rem; 
+            color: #A5B4FC; 
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        .nav-button::after { 
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #00E0FF; 
+            transition: width 0.3s ease-in-out;
+        }
+        .nav-button:hover::after, .nav-button.active::after {
+            width: 70%;
+        }
+        .nav-button:hover {
+            color: #00E0FF; 
+            transform: scale(1.03);
+        }
+        .nav-button.active {
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+        
+        .cta-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #FFFFFF;
+            background-image: linear-gradient(to right, #3B82F6, #6366F1); 
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+            white-space: nowrap;
+        }
+       
+        .cta-button:hover {
+            background-image: linear-gradient(to right, #2563EB, #4F46E5); 
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+        }
+
+        #mobile-menu-panel {
+            background-color: rgba(17, 24, 39, 0.95); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(79, 70, 229, 0.3);
+            position: absolute; 
+            left:0;
+            right:0;
+            top: 100%; 
+            z-index: 45; 
+        }
+        #mobile-menu-panel .nav-button {
+            display: block;
+            width: 100%;
+            text-align: center; 
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem; 
+            color: #A5B4FC;
+            border-radius: 0; 
+        }
+        #mobile-menu-panel .nav-button.active {
+            background-color: #4F46E5; color: #FFFFFF;
+        }
+         #mobile-menu-panel .nav-button:hover {
+            background-color: rgba(79, 70, 229, 0.3); color: #FFFFFF;
+         }
+
+        #home.hero-landing-content { 
+            padding: 6rem 2rem 4rem; 
+            text-align: center;
+            background-color: rgba(23, 23, 43, 0.75); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(129, 140, 248, 0.2); 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); 
+            margin: 0 auto 2rem auto; 
+            max-width: 90%; 
+        }
+        #home.hero-landing-content h1 {
+             color: #E0E7FF; 
+             font-weight: 800; 
+             font-size: 2.5rem; 
+             margin-bottom: 1.5rem;
+        }
+        #home.hero-landing-content p {
+            color: #9CA3AF; 
+            font-size: 1.125rem; 
+            max-width: 42rem; 
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.75;
+        }
+        @media (min-width: 768px) {
+            #home.hero-landing-content h1 {
+                font-size: 3.75rem; 
+            }
+            #home.hero-landing-content p {
+                font-size: 1.25rem; 
+            }
+        }
+
+
+        .content-section { 
+            display: none;
+            padding: 3rem; 
+            background-color: rgba(23, 23, 43, 0.75); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(129, 140, 248, 0.2); 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); 
+            margin-bottom: 3rem; 
+            opacity: 0;
+            color: #D1D5DB; 
+        }
+        .content-section.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .content-section h2, .content-section h3, .content-section h4 {
+            color: #A5B4FC; 
+        }
+        .content-section strong {
+             color: #C7D2FE; 
+        }
+        .content-section ul { list-style-type: disc; margin-left: 1.5rem;}
+        .content-section ol { list-style-type: decimal; margin-left: 1.5rem;}
+
+
+        .ingredient-button {
+            background-color: rgba(79, 70, 229, 0.15); 
+            color: #A5B4FC; 
+            border: 1px solid rgba(129, 140, 248, 0.3);
+        }
+        .ingredient-button:hover {
+            background-color: rgba(79, 70, 229, 0.3); 
+            border-color: #818CF8; 
+            color: #E0E7FF; 
+        }
+        .ingredient-button.selected {
+            background-color: #4F46E5; 
+            color: #FFFFFF;
+            border-color: #4F46E5;
+        }
+        .tab-button {
+            background-color: transparent;
+            color: #A5B4FC;
+            border-color: rgba(129, 140, 248, 0.3);
+        }
+        .tab-button.active {
+            background-color: rgba(79, 70, 229, 0.2);
+            color: #E0E7FF;
+            border-top-color: #818CF8;
+        }
+        .tab-content {
+            background-color: rgba(40, 40, 60, 0.4);
+            border-color: rgba(129, 140, 248, 0.3);
+        }
+        .chart-container {
+            background-color: rgba(23, 23, 43, 0.7);
+            border-color: rgba(129, 140, 248, 0.25);
+        }
+        table { margin-top: 1.5rem; }
+        th, td {
+            border: 1px solid rgba(129, 140, 248, 0.2); 
+            padding: 1rem; 
+            text-align: left;
+            color: #D1D5DB; 
+        }
+        th {
+            background-color: rgba(79, 70, 229, 0.2); 
+            color: #E0E7FF; 
+        }
+        .glossary-term { color: #818CF8; }
+        .skin-layer-diagram div {
+            border: 1px solid rgba(129, 140, 248, 0.4);
+            color: #A5B4FC;
+        }
+        .skin-layer-diagram .epidermis { background-color: rgba(79, 70, 229, 0.15); } 
+        .skin-layer-diagram .dermis { background-color: rgba(79, 70, 229, 0.25); }    
+        .skin-layer-diagram .hypodermis { background-color: rgba(79, 70, 229, 0.35); } 
+
+        #aiHelper label { color: #A5B4FC; }
+        #aiHelper select, #aiHelper input[type="text"] {
+            background-color: rgba(40, 40, 60, 0.7);
+            color: #E0E7FF;
+            border: 1px solid rgba(129, 140, 248, 0.3); 
+        }
+        #aiHelper select option {
+            background-color: #17172B; 
+            color: #E0E7FF;
+        }
+        #aiHelper input[type="text"]::placeholder {
+            color: #6B7280; 
+        }
+        #getAIRoutineBtn {
+            background-image: linear-gradient(to right, #4338CA, #6D28D9); 
+            color: #FFFFFF;
+        }
+        #getAIRoutineBtn:hover {
+             background-image: linear-gradient(to right, #4F46E5, #7C3AED);
+             transform: translateY(-1px);
+        }
+        footer {
+            background-color: rgba(17,24,39,0.8);
+            border-top: 1px solid rgba(129, 140, 248, 0.2);
+        }
+        footer p { color: #9CA3AF; }
+
+        /* Modal Styling */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            background-color: rgba(23, 23, 43, 0.9); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            margin: 10% auto;
+            padding: 2.5rem;
+            border: 1px solid rgba(129, 140, 248, 0.4);
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 650px; /* Slightly wider for more options */
+            color: #D1D5DB;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-content h2 { color: #A5B4FC; margin-bottom: 1.5rem; font-size: 1.75rem;}
+        .modal-content label { color: #A5B4FC; margin-bottom: 0.5rem; display: block; font-weight: 500;}
+        .modal-content select, .modal-content input[type="text"], .modal-content textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1.25rem; /* Increased spacing */
+            border-radius: 0.375rem;
+            border: 1px solid rgba(129, 140, 248, 0.4);
+            background-color: rgba(40, 40, 60, 0.8);
+            color: #E0E7FF;
+            transition: border-color 0.3s;
+        }
+        .modal-content select:focus, .modal-content input[type="text"]:focus, .modal-content textarea:focus {
+            outline: none;
+            border-color: #818CF8; 
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+        }
+        .modal-content button[type="submit"] {
+            background-image: linear-gradient(to right, #3B82F6, #6366F1);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .modal-content button[type="submit"]:hover {
+            background-image: linear-gradient(to right, #2563EB, #4F46E5);
+            transform: translateY(-1px);
+        }
+        .close-btn {
+            color: #9CA3AF; 
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #E0E7FF; 
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #recommendation-output {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(40, 40, 60, 0.5);
+            border-radius: 0.375rem;
+            border: 1px solid rgba(129, 140, 248, 0.2);
+            color: #E0E7FF;
+        }
+        #recommendation-output h3 { color: #A5B4FC; }
+        #recommendation-output p { margin-bottom: 0.5rem; }
+
+    </style>
+</head>
+<body class="text-base leading-relaxed">
+    
+    <nav> 
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-full">
+            <div class="brand-in-nav initial-load-brand">CYNORA®</div>
+            
+            <div id="desktop-nav-links" class="hidden md:flex items-center space-x-1 initial-load-nav">
+                <a href="#home" class="nav-button active" data-target="home" style="animation-delay: 0.2s;">Home</a>
+                <a href="#understanding" class="nav-button" data-target="understanding" style="animation-delay: 0.3s;">Understanding</a>
+                <a href="#ingredients" class="nav-button" data-target="ingredients" style="animation-delay: 0.4s;">Ingredients</a>
+                <a href="#combinations" class="nav-button" data-target="combinations" style="animation-delay: 0.5s;">Combinations</a>
+                <a href="#aiHelper" class="nav-button" data-target="aiHelper" style="animation-delay: 0.6s;">✨ AI Helper</a>
+                <a href="#glossary" class="nav-button" data-target="glossary" style="animation-delay: 0.7s;">Glossary</a>
+            </div>
+            
+            <a href="#" class="cta-button initial-load-cta hidden sm:inline-block" id="get-started-btn" style="animation-delay: 0.2s;">Get Started</a>
+
+            <div class="md:hidden flex items-center">
+                <button id="burger-menu-button" aria-label="Open menu" class="text-indigo-300 hover:text-white focus:outline-none p-2">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu-panel" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="nav-button active" data-target="home">Home</a>
+                <a href="#understanding" class="nav-button" data-target="understanding">Understanding</a>
+                <a href="#ingredients" class="nav-button" data-target="ingredients">Ingredients</a>
+                <a href="#combinations" class="nav-button" data-target="combinations">Combinations</a>
+                <a href="#aiHelper" class="nav-button" data-target="aiHelper">✨ AI Helper</a>
+                <a href="#glossary" class="nav-button" data-target="glossary">Glossary</a>
+                <a href="#" class="nav-button sm:hidden" id="get-started-btn-mobile">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <main> 
+        <section id="home" class="hero-landing-content content-section active scroll-fade-in">
+            <h1 class="initial-load-brand" style="animation-delay: 0.4s;">Interactive Guide to Skin Pigmentation & Treatments</h1>
+            <p class="initial-load-brand" style="animation-delay: 0.6s;">An exploration of dermatological science behind skin color and its management.</p>
+        </section>
+
+        <div class="container mx-auto p-4 sm:p-8">
+            <section id="understanding" class="content-section">
+                <h2 class="text-3xl font-semibold mb-8">Understanding Pigmentation</h2>
+                <p class="mb-8 text-lg leading-relaxed">Skin pigmentation is determined by melanin, a pigment produced by specialized cells called melanocytes. This section explores the skin's structure, how melanin is made, and common conditions that lead to changes in skin color. Gaining clarity on these foundational topics is crucial for appreciating how different treatments work to address pigmentation concerns.</p>
+                <div class="mb-10">
+                    <h3 class="text-2xl font-semibold mb-4">A. Fundamental Skin Anatomy & Physiology</h3>
+                    <p class="mb-3 text-lg">The skin, our largest organ, has three main layers: the epidermis, dermis, and hypodermis. Pigmentation primarily involves the epidermis and dermis.</p>
+                    <div class="skin-layer-diagram my-6 p-5 bg-gray-800/20 rounded-lg border border-indigo-500/30">
+                        <div class="epidermis"><b>Epidermis</b> (Outermost layer)</div>
+                        <div class="dermis"><b>Dermis</b> (Middle layer)</div>
+                        <div class="hypodermis"><b>Hypodermis</b> (Innermost layer)</div>
+                    </div>
+                    <p class="mb-3 text-lg">The <strong>Epidermal Melanin Unit</strong> consists of one melanocyte supplying melanin to about 30-40 keratinocytes. This ensures even pigment distribution. Melanocytes are located in the basal layer of the epidermis.</p>
+                </div>
+                <div class="mb-10">
+                    <h3 class="text-2xl font-semibold mb-4">B. The Process of Melanogenesis (Melanin Production)</h3>
+                    <p class="mb-3 text-lg">Melanogenesis is the complex process of producing melanin within melanosomes (organelles inside melanocytes).</p>
+                    <ol class="list-decimal list-inside space-y-3 text-lg">
+                        <li><strong>Origin:</strong> Melanocytes originate from neural crest cells and migrate to the epidermis.</li>
+                        <li><strong>Melanosome Maturation:</strong> Melanin is synthesized in stages (I-IV) within melanosomes.</li>
+                        <li><strong>Enzymatic Cascade:</strong>
+                            <ul class="list-disc list-inside ml-6 space-y-1">
+                                <li>L-Tyrosine is converted to L-DOPA by the enzyme <strong>Tyrosinase</strong> (rate-limiting step).</li>
+                                <li>Tyrosinase further oxidizes L-DOPA to Dopaquinone.</li>
+                                <li>Dopaquinone leads to <strong>Eumelanin</strong> (brown/black) or, with cysteine, <strong>Pheomelanin</strong> (red/yellow).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Key Enzymes:</strong> Tyrosinase (TYR), Tyrosinase-Related Protein 1 (TYRP1), Dopachrome Tautomerase (DCT).</li>
+                        <li><strong>Melanosome Transfer:</strong> Mature melanosomes are transferred from melanocytes to keratinocytes.</li>
+                    </ol>
+                    <p class="mt-4 mb-3 text-lg"><strong>Regulation:</strong> Melanogenesis is regulated by genetics, hormones, UV radiation (most potent stimulator), and inflammation.</p>
+                    <p class="italic text-lg">UV radiation triggers DNA damage, p53 activation, release of signaling molecules, and enzyme activation, all increasing melanin production.</p>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold mb-6">C. Common Types of Persistent Skin Pigmentation</h3>
+                     <div class="flex flex-wrap border-b border-indigo-500/30 mb-2">
+                        <button class="tab-button active" onclick="openDisorderTab(event, 'melasma')">Melasma</button>
+                        <button class="tab-button" onclick="openDisorderTab(event, 'pih')">Post-Inflammatory Hyperpigmentation (PIH)</button>
+                        <button class="tab-button" onclick="openDisorderTab(event, 'lentigines')">Solar Lentigines</button>
+                    </div>
+                    <div id="melasma" class="tab-content active">
+                        <h4 class="text-xl font-semibold mb-3">Melasma</h4>
+                        <p class="mb-2 text-lg"><strong>Presentation:</strong> Symmetrical, irregular brown/gray-brown patches on sun-exposed areas.</p>
+                        <p class="mb-2 text-lg"><strong>Pathophysiology:</strong> Multifactorial. Key factors include UV Radiation, Hormonal Factors, Genetic Predisposition, and Dermal Factors.</p>
+                        <p class="text-lg"><strong>Types:</strong> Epidermal, Dermal, Mixed.</p>
+                    </div>
+                    <div id="pih" class="tab-content">
+                        <h4 class="text-xl font-semibold mb-3">Post-Inflammatory Hyperpigmentation (PIH)</h4>
+                        <p class="mb-2 text-lg"><strong>Presentation:</strong> Light brown to blue-gray macules/patches after skin inflammation or injury.</p>
+                        <p class="mb-2 text-lg"><strong>Etiology:</strong> Acne, eczema, psoriasis, trauma, dermatological procedures.</p>
+                        <p class="mb-2 text-lg"><strong>Pathogenesis:</strong> Inflammatory mediators stimulate melanocytes. Dermal PIH is more persistent.</p>
+                        <p class="text-lg"><strong>Risk Factors:</strong> More common in darker skin types. Intensity of initial inflammation matters.</p>
+                    </div>
+                    <div id="lentigines" class="tab-content">
+                        <h4 class="text-xl font-semibold mb-3">Solar Lentigines (Sun Spots)</h4>
+                        <p class="mb-2 text-lg"><strong>Presentation:</strong> Benign, discrete tan to dark brown macules on chronically sun-exposed skin.</p>
+                        <p class="mb-2 text-lg"><strong>Pathogenesis:</strong> Chronic UV exposure leads to localized melanocyte proliferation and melanin accumulation.</p>
+                        <p class="text-lg"><strong>Risk Factors:</strong> Age, fair skin, cumulative sun exposure.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ingredients" class="content-section">
+                <h2 class="text-3xl font-semibold mb-8">Active Ingredients for Hyperpigmentation</h2>
+                <p class="mb-8 text-lg leading-relaxed">A variety of active ingredients are scientifically recognized for their ability to treat persistent skin pigmentation. They work through different mechanisms, such as inhibiting the pigment-producing enzyme tyrosinase, accelerating skin cell turnover, or preventing pigment transfer. This section allows you to explore these key ingredients in detail. Click on an ingredient name to learn more about its specific actions, chemical properties, efficacy from studies, and clinical profile.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-10" id="ingredientButtons">
+                </div>
+                <div id="ingredientDetail" class="mt-8 p-6 border border-indigo-500/30 rounded-lg bg-gray-800/30 min-h-[300px]">
+                    <p class="text-gray-400 italic text-lg">Select an ingredient from the list above to view its details.</p>
+                </div>
+                <div class="mt-10">
+                    <h3 class="text-2xl font-semibold mb-4">Tyrosinase Inhibitor Potency Comparison</h3>
+                    <p class="mb-6 text-lg leading-relaxed">Some ingredients are particularly effective at inhibiting tyrosinase, the key enzyme in melanin production. The chart below compares the approximate half-maximal inhibitory concentration ($IC_{50}$) of selected agents against human tyrosinase. A lower $IC_{50}$ value indicates greater potency.</p>
+                    <div class="chart-container bg-slate-800/50">
+                        <canvas id="potencyChart"></canvas>
+                    </div>
+                     <p class="text-base text-gray-400 mt-3 text-center">Data based on reported $IC_{50}$ values: Thiamidol ~1.1 µmol/L, Hydroquinone >4000 µmol/L, Kojic Acid >500 µmol/L for human tyrosinase. This illustrates Thiamidol's high specific potency.</p>
+                </div>
+            </section>
+
+            <section id="combinations" class="content-section">
+                <h2 class="text-3xl font-semibold mb-8">Ingredient Combinations & Skin Type Considerations</h2>
+                <p class="mb-8 text-lg leading-relaxed">Treating hyperpigmentation often involves a multi-faceted approach. Combining active ingredients with different mechanisms of action can enhance efficacy. However, it's also crucial to consider how these ingredients and combinations interact with various skin types and tones, as sensitivity and response can vary significantly. This section provides an overview of these important aspects.</p>
+                <div class="mb-10 p-6 bg-gray-800/30 rounded-lg border border-indigo-500/30">
+                    <h3 class="text-2xl font-semibold mb-4">Synergistic Effects of Combining Ingredients</h3>
+                    <p class="mb-3 text-lg">Combining ingredients that target different steps in the pigmentation pathway can lead to better and faster results.</p>
+                    <p class="mb-3 text-lg"><strong>Pros of Combinations:</strong></p>
+                    <ul class="list-disc list-inside ml-4 mb-3 space-y-2 text-lg">
+                        <li><strong>Enhanced Efficacy:</strong> Targeting multiple pathways can be more effective.</li>
+                        <li><strong>Reduced Concentrations:</strong> May allow lower doses, reducing side effects.</li>
+                        <li><strong>Addressing Multiple Factors:</strong> Useful for complex conditions like melasma.</li>
+                    </ul>
+                    <p class="mb-3 text-lg"><strong>Common Effective Combinations (Examples):</strong></p>
+                    <ul class="list-disc list-inside ml-4 mb-3 space-y-2 text-lg">
+                        <li><strong>Kligman's Formula:</strong> Hydroquinone + Retinoid + Mild Corticosteroid.</li>
+                        <li><strong>Retinoids + Tyrosinase Inhibitors:</strong> e.g., Retinoid + Azelaic Acid.</li>
+                        <li><strong>Niacinamide + Various Actives:</strong> Good partner due to barrier support.</li>
+                    </ul>
+                     <p class="mb-2 text-lg"><strong>Cons of Combinations:</strong></p>
+                    <ul class="list-disc list-inside ml-4 text-lg">
+                        <li><strong>Increased Irritation Potential:</strong> Requires careful introduction.</li>
+                    </ul>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    <div class="p-6 bg-gray-800/30 rounded-lg border border-indigo-500/30">
+                        <h3 class="text-2xl font-semibold mb-4">Facial vs. Body Application</h3>
+                        <ul class="list-disc list-inside ml-4 space-y-2 text-lg">
+                            <li><strong>Skin Thickness:</strong> Body skin is thicker.</li>
+                            <li><strong>Sensitivity:</strong> Facial skin often more sensitive.</li>
+                            <li><strong>Area Size:</strong> Systemic absorption concern for large body areas.</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-gray-800/30 rounded-lg border border-indigo-500/30">
+                        <h3 class="text-2xl font-semibold mb-4">Skin Type & Tone Considerations</h3>
+                         <ul class="list-disc list-inside ml-4 space-y-2 text-lg">
+                            <li><strong>Sensitive/Dry Skin:</strong> Gentle actives preferred.</li>
+                            <li><strong>Oily/Acne-Prone Skin:</strong> Benefits from Salicylic Acid, Retinoids.</li>
+                            <li><strong>Darker Skin Tones:</strong> Higher PIH risk. Caution with aggressive treatments.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4">Ingredient Categorization Overview</h3>
+                    <p class="mb-6 text-lg leading-relaxed">This table provides a general categorization of key ingredients. Individual results can vary.</p>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ingredient</th>
+                                    <th>General Speed of Noticeable Results</th>
+                                    <th>Reliability (Evidence Strength)</th>
+                                    <th>Factors Contributing to 'Premiumness'</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categorizationTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="aiHelper" class="content-section">
+                <h2 class="text-3xl font-semibold mb-6">✨ AI Skincare Helper</h2>
+                <p class="mb-8 text-lg leading-relaxed">Get a personalized skincare routine suggestion from our AI! Please provide some information about your skin and concerns. This tool provides general suggestions and is not a substitute for professional dermatological advice.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <label for="aiSkinType" class="block text-base font-medium mb-2 text-indigo-300">Your Skin Type:</label>
+                        <select id="aiSkinType" class="mt-1 block w-full py-2.5 px-3.5 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base bg-slate-700/50 border-indigo-500/40 text-indigo-100">
+                            <option>Normal</option>
+                            <option>Oily</option>
+                            <option>Dry</option>
+                            <option>Combination</option>
+                            <option>Sensitive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="aiConcern" class="block text-base font-medium mb-2 text-indigo-300">Primary Pigmentation Concern:</label>
+                        <select id="aiConcern" class="mt-1 block w-full py-2.5 px-3.5 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base bg-slate-700/50 border-indigo-500/40 text-indigo-100">
+                            <option>General Hyperpigmentation</option>
+                            <option>Melasma</option>
+                            <option>Post-Inflammatory Hyperpigmentation (PIH)</option>
+                            <option>Solar Lentigines (Sun Spots)</option>
+                            <option>Uneven Skin Tone</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <label for="aiAvoidIngredients" class="block text-base font-medium mb-2 text-indigo-300">Ingredients to avoid or currently using (optional, comma-separated):</label>
+                    <input type="text" id="aiAvoidIngredients" class="mt-1 block w-full py-2.5 px-3.5 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base bg-slate-700/50 border-indigo-500/40 text-indigo-100 placeholder-indigo-400/70" placeholder="e.g., Retinol, Vitamin C">
+                </div>
+                <button id="getAIRoutineBtn" class="inline-flex items-center transition-all duration-300 text-base bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-2.5 px-6 rounded-md shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <span class="mr-2">Get AI Routine Suggestion</span>
+                    <svg id="aiLoadingSpinner" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+                <div id="aiRoutineResult" class="mt-10 p-8 border border-indigo-500/30 rounded-lg bg-slate-800/40 min-h-[200px] shadow-sm">
+                    <p class="text-indigo-300 italic text-lg">Your personalized routine suggestion will appear here.</p>
+                </div>
+            </section>
+
+            <section id="glossary" class="content-section">
+                <h2 class="text-3xl font-semibold mb-8">Glossary of Dermatological Terms</h2>
+                <p class="mb-8 text-lg leading-relaxed">Understanding the terminology used in dermatology is essential for grasping the nuances of skin pigmentation and its treatments. This glossary defines key terms relevant to the topics discussed in this guide. Accurate use of these terms helps in precise diagnosis, treatment selection, and communication.</p>
+                <div id="glossaryContent" class="space-y-5 text-lg">
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="get-started-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-modal" class="close-btn">&times;</span>
+        <h2>Find Your Perfect Skin Treatment</h2>
+        <form id="skin-consultation-form" class="space-y-4">
+          <div>
+            <label for="hyperpigmentation-type">Select Your Type of Hyperpigmentation:</label>
+            <select id="hyperpigmentation-type" name="hyperpigmentation-type" class="w-full">
+              <option value="melasma">Melasma</option>
+              <option value="pih">Post-Inflammatory Hyperpigmentation (PIH)</option>
+              <option value="solar-lentigines">Solar Lentigines (Sun Spots)</option>
+              <option value="uneven-tone">Uneven Skin Tone</option>
+              <option value="general">General Dark Spots</option>
+              <option value="other-pigment">Other</option>
+              <option value="unsure-pigment">Unsure</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="skin-type">Skin Type (Fitzpatrick scale):</label>
+            <select id="skin-type" name="skin-type" class="w-full">
+              <option value="I">Type I (Very fair, always burns, never tans)</option>
+              <option value="II">Type II (Fair, usually burns, tans minimally)</option>
+              <option value="III">Type III (Medium, sometimes burns, tans uniformly)</option>
+              <option value="IV">Type IV (Olive, rarely burns, tans well)</option>
+              <option value="V">Type V (Brown, very rarely burns, tans very easily)</option>
+              <option value="VI">Type VI (Dark brown/black, never burns, tans very easily)</option>
+              <option value="unsure-fitzpatrick">Unsure</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="sensitivity">Any skin sensitivity?</label>
+            <select id="sensitivity" name="sensitivity" class="w-full">
+                <option value="none">None</option>
+                <option value="mild-redness">Mild redness/itching occasionally</option>
+                <option value="eczema-prone">Eczema prone</option>
+                <option value="rosacea-prone">Rosacea prone</option>
+                <option value="retinoid-sensitive">Sensitive to Retinoids</option>
+                <option value="aha-bha-sensitive">Sensitive to AHAs/BHAs</option>
+                <option value="fragrance-sensitive">Sensitive to Fragrance</option>
+                <option value="other-sensitivity">Other (Specify if comfortable in notes)</option>
+                <option value="unsure-sensitivity">Unsure about sensitivity</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="current-routine">Current key active ingredients in your routine:</label>
+             <select id="current-routine" name="current-routine" class="w-full">
+                <option value="none">None / Basic (Cleanser, Moisturizer, SPF)</option>
+                <option value="retinoids">Retinoids (Retinol, Tretinoin, Adapalene)</option>
+                <option value="vitamin-c">Vitamin C</option>
+                <option value="ahas">AHAs (Glycolic, Lactic Acid)</option>
+                <option value="bhas">BHAs (Salicylic Acid)</option>
+                <option value="niacinamide">Niacinamide</option>
+                <option value="azelaic-acid">Azelaic Acid</option>
+                <option value="hydroquinone">Hydroquinone</option>
+                <option value="multiple-actives">Multiple Actives (e.g., Retinoid + Vit C)</option>
+                <option value="other-actives">Other Actives (Specify if comfortable in notes)</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="medical-history">Any relevant medical history or medications?</label>
+            <select id="medical-history" name="medical-history" class="w-full">
+                <option value="none">None</option>
+                <option value="allergies">Known Skin Allergies</option>
+                <option value="topical-meds">Using Prescription Topical Medications</option>
+                <option value="oral-meds">Taking Oral Medications for Skin/Other</option>
+                <option value="pregnant-nursing">Pregnant or Nursing</option>
+                <option value="prefer-not-to-say">Prefer not to say</option>
+            </select>
+          </div>
+
+          <button type="submit" id="submit-form-btn">Get Recommendations</button>
+        </form>
+        <div id="recommendation-output" class="mt-4"></div>
+      </div>
+    </div>
+
+
+    <footer class="text-center py-10 mt-12 border-t border-indigo-500/20 bg-slate-900/50 backdrop-blur-sm">
+        <p class="text-base text-indigo-300">&copy; 2024 Interactive Guide to Skin Pigmentation. Information based on dermatological review. AI suggestions are for informational purposes only and not medical advice.</p>
+    </footer>
+
+<script>
+    const ingredientData = {
+        "Hydroquinone": {
+            mechanism: [
+                "Competitively inhibits tyrosinase, the rate-limiting enzyme in melanin synthesis.",
+                "Exhibits cytotoxic effects on melanocytes, leading to their damage and reduced numbers.",
+                "May inhibit DNA/RNA synthesis in melanocytes and alter melanosome structure."
+            ],
+            chemical: [
+                "Benzene-1,4-diol, aromatic organic compound.",
+                "Susceptible to oxidation (turns brown/black); requires light/air protection and stabilizers (e.g., sodium metabisulfite).",
+                "Penetration enhanced by retinoids or AHAs; liposomal encapsulation can improve delivery."
+            ],
+            efficacy: "Long considered a benchmark for hyperpigmentation, especially melasma. Dual action of tyrosinase inhibition and melanocytotoxicity leads to significant depigmentation. Efficacy often seen within 4-6 weeks, more significant results in 2-3 months.",
+            clinical: {
+                indications: "Melasma, severe PIH, solar lentigines.",
+                side_effects: "Irritation, redness, dryness, contact dermatitis. Rare but serious: exogenous ochronosis (paradoxical blue-black discoloration) with prolonged use/high concentrations, especially in darker skin. Hypopigmentation.",
+                contraindications: "Pregnancy, lactation (generally). Allergy to HQ.",
+                safety: "Often used short-term (3-6 months) under medical supervision. Gradual tapering recommended. Strict sun protection is mandatory."
+            },
+            speed: "Noticeable in 4-6 weeks, significant in 2-3 months.",
+            reliability: "High (for efficacy, but with safety caveats).",
+            premiumness: "Formulation for stability, potential for controlled release systems (liposomes)."
+        },
+        "Retinoids": {
+            mechanism: [
+                "Accelerate epidermal cell turnover, shedding pigmented keratinocytes.",
+                "Inhibit tyrosinase activity and expression.",
+                "Promote melanin dispersion and reduce melanosome transfer.",
+                "Downregulate melanocyte activity.",
+                "Receptor-mediated action (RARs, RXRs) modulating gene transcription."
+            ],
+            chemical: [
+                "Vitamin A derivatives (Tretinoin, Retinol, Adapalene, Tazarotene).",
+                "Lipophilic. Many are unstable (light, oxygen, heat sensitive - e.g., Tretinoin, Retinol).",
+                "Adapalene is more stable. Tazarotene is a prodrug.",
+                "Advanced formulations (microspheres, nanoemulsions, SLNs) improve stability, delivery, and reduce irritation."
+            ],
+            efficacy: "Highly effective for various hyperpigmentation types and photoaging. Tretinoin is potent. Results are gradual, noticeable over weeks to months. Improves skin texture and tone.",
+            clinical: {
+                indications: "Melasma, PIH (especially acne-induced), solar lentigines, photoaging.",
+                side_effects: "Common: Retinoid dermatitis (irritation, redness, peeling, dryness, sun sensitivity). Usually improves with time and proper use (gradual introduction, moisturizers).",
+                contraindications: "Pregnancy (teratogenic risk, especially oral and high-potency topicals like Tazarotene).",
+                safety: "Start with low concentration, infrequent application. Sun protection is critical. Not all retinoids are equal in potency/irritation."
+            },
+            speed: "Gradual; weeks to months for visible improvement.",
+            reliability: "High (for tretinoin, adapalene, tazarotene in specific indications).",
+            premiumness: "Stability of active, advanced delivery systems (e.g., encapsulated retinol, microsphere tretinoin), research into receptor selectivity."
+        },
+        "Azelaic Acid": {
+            mechanism: [
+                "Competitively inhibits tyrosinase, more selective for hyperactive/abnormal melanocytes.",
+                "Inhibits mitochondrial enzymes and DNA synthesis in abnormal melanocytes.",
+                "Anti-keratinizing (comedolytic) effects.",
+                "Anti-inflammatory and antioxidant properties."
+            ],
+            chemical: [
+                "Naturally occurring dicarboxylic acid ($C_9H_{16}O_4$).",
+                "Modest percutaneous absorption; formulation (gels better than creams) and pH affect penetration.",
+                "Nanoformulations (liposomes, ethosomes) enhance delivery."
+            ],
+            efficacy: "Effective for melasma, PIH (especially acne/rosacea-related), and acne. Considered gentle with good long-term safety. Improvement is gradual. Comparable to hydroquinone 2-4% in some melasma studies.",
+            clinical: {
+                indications: "Melasma, PIH, acne, rosacea.",
+                side_effects: "Generally well-tolerated. Mild, transient stinging, burning, itching, or dryness, especially initially. Hypopigmentation is rare due to selectivity.",
+                contraindications: "Known hypersensitivity.",
+                safety: "Considered safe for long-term use and during pregnancy (Category B)."
+            },
+            speed: "Gradual; several weeks to months.",
+            reliability: "Moderate to High.",
+            premiumness: "Formulation for enhanced penetration and stability, sourcing of high-purity AZA."
+        },
+        "Kojic Acid": {
+            mechanism: [
+                "Potent tyrosinase inhibitor by chelating copper ions at the enzyme's active site.",
+                "May inhibit dopachrome tautomerization.",
+                "Antioxidant and anti-inflammatory effects."
+            ],
+            chemical: [
+                "Fungal metabolite ($C_6H_6O_4$).",
+                "Limited oil solubility. Susceptible to degradation (light, heat, air - browning).",
+                "Ester derivatives (e.g., Kojic Dipalmitate) are more stable and lipophilic for better penetration."
+            ],
+            efficacy: "Effective for skin lightening, often used in combination. Results can be seen in weeks. Efficacy similar to other tyrosinase inhibitors, but stability can be an issue with pure kojic acid.",
+            clinical: {
+                indications: "Melasma, solar lentigines, general hyperpigmentation.",
+                side_effects: "Contact dermatitis, skin sensitization, redness, irritation. Concerns about photostability/photo-damage and historical mutagenicity concerns (low risk at cosmetic levels).",
+                contraindications: "Allergy to kojic acid.",
+                safety: "CIR: Safe up to 1% in leave-on cosmetics. Some data up to 2%. Restricted in some regions. Use with sunscreen."
+            },
+            speed: "Weeks to a few months.",
+            reliability: "Moderate (stability and sensitization can be issues).",
+            premiumness: "Use of stable derivatives (e.g., kojic dipalmitate), advanced formulation for stability and penetration."
+        },
+        "Arbutin": {
+            mechanism: [
+                "Tyrosinase inhibitor (competitive). Alpha-arbutin often considered more potent/stable than Beta-arbutin.",
+                "Can hydrolyze to hydroquinone in vitro/vivo, contributing to effects.",
+                "May inhibit melanosome maturation. Antioxidant properties."
+            ],
+            chemical: [
+                "Naturally occurring glycosylated hydroquinone (Alpha- and Beta- forms).",
+                "Hydrophilic; limited skin penetration. Advanced delivery systems (nanoparticles, liposomes) improve this.",
+                "Stability concern: hydrolysis to HQ. Alpha-arbutin is generally more stable."
+            ],
+            efficacy: "Considered a gentler alternative to hydroquinone. Effective for skin lightening. Alpha-arbutin may show results faster or be more potent. Improvement is gradual.",
+            clinical: {
+                indications: "General hyperpigmentation, melasma, lentigines.",
+                side_effects: "Generally well-tolerated. Rare dermatitis/allergic reactions. Concerns about hydroquinone release if not formulated/stored properly.",
+                contraindications: "Allergy.",
+                safety: "SCCS: Alpha-arbutin safe up to 2% (face), 0.5% (body); Beta-arbutin up to 7% (face) with HQ <1ppm. Deoxyarbutin deemed unsafe by SCCS."
+            },
+            speed: "Gradual; weeks to months.",
+            reliability: "Moderate to High (Alpha-arbutin often preferred).",
+            premiumness: "Use of Alpha-arbutin, stabilization technologies, advanced delivery systems."
+        },
+        "Niacinamide": {
+            mechanism: [
+                "Inhibits melanosome transfer from melanocytes to keratinocytes (primary mechanism for pigmentation).",
+                "Anti-inflammatory, antioxidant effects.",
+                "Enhances skin barrier function (increases ceramides, FAs, proteins).",
+                "Does NOT inhibit tyrosinase directly."
+            ],
+            chemical: [
+                "Amide form of Vitamin B3. Water-soluble.",
+                "Relatively stable (pH 3-7.5). Can hydrolyze to nicotinic acid at very low/high pH (causes flushing).",
+                "Penetration can be enhanced by certain formulation excipients."
+            ],
+            efficacy: "Effective for various types of hyperpigmentation, redness, and improving overall skin health. Results are gradual. Particularly good for PIH due to anti-inflammatory action. Works well in combination.",
+            clinical: {
+                indications: "Hyperpigmentation (melasma, PIH), acne, rosacea, skin barrier repair, anti-aging.",
+                side_effects: "Generally very well-tolerated. Rare mild redness or irritation, especially at high concentrations (>5-10%).",
+                contraindications: "Known hypersensitivity.",
+                safety: "Very safe for long-term use. Suitable for most skin types, including sensitive skin. Often used at 2-5%, up to 10%."
+            },
+            speed: "Gradual; 4-8 weeks or longer.",
+            reliability: "High.",
+            premiumness: "High purity, formulation to avoid hydrolysis to nicotinic acid, synergistic combinations."
+        },
+        "Vitamin C": {
+            mechanism: [
+                "Potent antioxidant (scavenges ROS).",
+                "Inhibits tyrosinase by interacting with copper ions.",
+                "Reduces dopaquinone back to L-DOPA.",
+                "Essential for collagen synthesis. Anti-inflammatory."
+            ],
+            chemical: [
+                "L-Ascorbic Acid (LAA) is the most active but highly unstable (oxidizes easily - light, air, heat). Requires low pH (<3.5) for penetration and stability.",
+                "Derivatives (MAP, SAP, Ascorbyl Glucoside, EAC, THDA) are more stable, may have better penetration or less irritation, but must convert to LAA in skin (variable efficiency)."
+            ],
+            efficacy: "LAA is effective for hyperpigmentation and anti-aging when properly formulated. Results depend on form, concentration, pH, and stability. Often combined with Vitamin E and Ferulic Acid for enhanced stability and synergistic antioxidant effects.",
+            clinical: {
+                indications: "Hyperpigmentation, photoaging, dullness, photoprotection (adjunct to sunscreen).",
+                side_effects: "LAA can cause irritation, stinging, redness, especially at high concentrations and low pH. Derivatives are generally better tolerated.",
+                contraindications: "Allergy. Caution with very sensitive skin for LAA.",
+                safety: "Proper formulation is key for LAA efficacy and minimizing irritation. Derivatives offer stability but may be less potent. Use with sunscreen."
+            },
+            speed: "Gradual; weeks to months.",
+            reliability: "High (for well-formulated LAA or effective derivatives).",
+            premiumness: "Stabilization of LAA, use of effective and stable derivatives, optimal pH and concentration, synergistic antioxidant combinations (e.g., CE Ferulic)."
+        },
+        "Licorice Extract": {
+            mechanism: [
+                "Glabridin (isoflavonoid) is a potent tyrosinase inhibitor.",
+                "Antioxidant and anti-inflammatory (glabridin, isoliquiritigenin, licochalcone A).",
+                "Liquiritin (flavonoid) may disperse existing melanin."
+            ],
+            chemical: [
+                "Complex botanical extract (*Glycyrrhiza* sp.). Contains multiple bioactives.",
+                "Glabridin is hydrophobic, low water solubility, poor permeability. Isoliquiritigenin levels can be increased by heat processing.",
+                "Formulation challenges for stability and penetration of key actives (e.g., glabridin). Nanoemulsions or other carriers can help."
+            ],
+            efficacy: "Shows promise for skin lightening and anti-inflammatory benefits. Efficacy depends on extract quality, concentration of active compounds (especially glabridin), and formulation. Variability is a challenge.",
+            clinical: {
+                indications: "Hyperpigmentation, PIH, sensitive/inflamed skin.",
+                side_effects: "Generally well-tolerated. Rare allergic contact dermatitis (especially with oil-soluble extracts). Concerns about standardization and potential impurities.",
+                contraindications: "Allergy.",
+                safety: "Used at low concentrations in cosmetics (0.0001-0.5%). Higher concentrations for therapeutic effects. CIR notes potential for pesticide/heavy metal residues."
+            },
+            speed: "Variable; weeks to months.",
+            reliability: "Moderate (due to variability in extracts and formulation challenges).",
+            premiumness: "Standardized extracts with high levels of active compounds (e.g., glabridin), advanced delivery systems for actives."
+        },
+        "Tranexamic Acid": {
+            mechanism: [
+                "Inhibits UV-induced plasmin activity in keratinocytes (primary mechanism). This reduces production of melanocyte stimulators (prostaglandins, α-MSH).",
+                "Anti-inflammatory and anti-angiogenic effects (reduces VEGF).",
+                "May inhibit PAR-2 activation (involved in melanosome transfer).",
+                "Weak/secondary direct tyrosinase inhibition is less clear."
+            ],
+            chemical: [
+                "Synthetic lysine derivative. Hydrophilic, limiting topical penetration.",
+                "Ester derivatives (e.g., Cetyl Tranexamate Mesylate, TXVector™) are lipophilic prodrugs for better penetration, releasing TXA in skin.",
+                "Can be used topically, orally, or via intradermal injection."
+            ],
+            efficacy: "Increasingly recognized for melasma and PIH. Effective both topically and orally. Topical results are gradual. Oral use can be very effective but has more systemic considerations.",
+            clinical: {
+                indications: "Melasma (especially with vascular component), PIH, rosacea-associated redness.",
+                side_effects: "Topical: Generally well-tolerated; mild irritation, dryness possible. Oral: GI upset, menstrual changes, very rare risk of thrombosis (contraindicated in those with risk factors).",
+                contraindications: "Oral: History of thromboembolic disease, certain coagulation disorders. Topical: Allergy.",
+                safety: "Topical is safe for most. Oral requires medical evaluation. Concentrations for topical: 2-5%."
+            },
+            speed: "Gradual; 8-12 weeks or more for topical.",
+            reliability: "Moderate to High (especially for melasma).",
+            premiumness: "Use of lipophilic ester prodrugs for enhanced topical delivery, formulation for stability."
+        },
+        "Alpha Hydroxy Acids (AHAs)": {
+            mechanism: [
+                "Exfoliation/desquamation by reducing corneocyte cohesion (primary).",
+                "Stimulate cell turnover.",
+                "Glycolic acid may directly inhibit tyrosinase (emerging evidence).",
+                "Increase hyaluronic acid and collagen (glycolic).",
+                "Enhance penetration of other actives."
+            ],
+            chemical: [
+                "e.g., Glycolic Acid (smallest, from sugar cane), Lactic Acid (gentler, from milk).",
+                "Water-soluble. Efficacy is pH-dependent (most effective at low pH <4.0).",
+                "Glycolic acid penetrates well due to small size. Lactic acid is larger, more hydrating."
+            ],
+            efficacy: "Effective for improving skin texture, reducing superficial hyperpigmentation, and enhancing radiance. Higher concentrations (peels) provide more dramatic results. Glycolic and lactic acids are well-studied.",
+            clinical: {
+                indications: "Superficial hyperpigmentation, dullness, uneven texture, photoaging. Used in daily products (2-10%) and professional peels (20-70%).",
+                side_effects: "Irritation, redness, stinging, peeling, sun sensitivity. Depends on concentration, pH, frequency, and skin type. Lactic acid is generally gentler.",
+                contraindications: "Very sensitive skin, active infections, recent procedures (for peels).",
+                safety: "Sun protection is crucial as AHAs increase sun sensitivity. Proper formulation pH is key. Patch test recommended."
+            },
+            speed: "Daily use: Weeks for texture, longer for pigment. Peels: Faster results.",
+            reliability: "High (for exfoliation and texture).",
+            premiumness: "Proper pH formulation, buffering for reduced irritation, combination with soothing agents."
+        },
+         "Beta Hydroxy Acids (BHAs)": {
+            mechanism: [
+                "Exfoliation/desmolytic action by disrupting corneodesmosomes.",
+                "Lipid-soluble, penetrates pores (comedolytic effect).",
+                "Anti-inflammatory properties.",
+                "May reduce sebum secretion."
+            ],
+            chemical: [
+                "Salicylic Acid (SA) is the main BHA.",
+                "Oil-soluble. Slightly soluble in water, soluble in alcohols.",
+                "Stable in formulations."
+            ],
+            efficacy: "Highly effective for acne and oily skin due to pore penetration. Good for PIH associated with acne. Exfoliates surface pigmentation. Less directly focused on tyrosinase inhibition compared to other agents.",
+            clinical: {
+                indications: "Acne, comedones, oily skin, PIH (especially acne-related), superficial pigmentation. Used in OTC products (0.5-2%) and peels (up to 30%+).",
+                side_effects: "Dryness, peeling, irritation, redness. Generally well-tolerated at OTC levels. Salicylism is rare with topical use.",
+                contraindications: "Aspirin allergy (as SA is related). Caution in pregnancy (systemic absorption concern with high doses/large areas, though low risk with typical topical use).",
+                safety: "Effective for targeted concerns. Sun protection recommended."
+            },
+            speed: "Weeks for acne improvement and surface exfoliation.",
+            reliability: "High (for acne and exfoliation).",
+            premiumness: "Formulation for effective delivery and minimized irritation, e.g., timed-release or buffered systems."
+        },
+        "Thiamidol": {
+            mechanism: [
+                "Highly potent and specific inhibitor of human tyrosinase (reversible).",
+                "Blocks conversion of tyrosine to melanin.",
+                "Prevents UV-induced hyperpigmentation."
+            ],
+            chemical: [
+                "Isobutylamido Thiazolyl Resorcinol ($C_{13}H_{14}N_2O_3S$).",
+                "Patented resorcinol-thiazole derivative (Eucerin/Beiersdorf).",
+                "Formulated in creams/serums (0.1-0.2%). Details on solubility/penetration enhancers not widely public but clinical efficacy implies good delivery."
+            ],
+            efficacy: "Clinically proven to be very effective for reducing various types of hyperpigmentation (melasma, age spots, PIH). Visible results often reported within 2-4 weeks, with continued improvement. High potency against human tyrosinase.",
+            clinical: {
+                indications: "Melasma, solar lentigines (age spots), PIH, general hyperpigmentation.",
+                side_effects: "Reported to be very gentle and well-tolerated, even on sensitive skin. Infrequent, minor transient skin irritation.",
+                contraindications: "Known hypersensitivity.",
+                safety: "Considered safe and effective for all skin types and tones. Recommended for daily use. Sun protection essential."
+            },
+            speed: "Relatively fast; noticeable results often in 2-4 weeks.",
+            reliability: "High (strong clinical data for efficacy and tolerability).",
+            premiumness: "Patented ingredient, novelty, high research investment, specificity for human tyrosinase."
+        },
+        "Hexylresorcinol": {
+            mechanism: [
+                "Potent tyrosinase inhibitor.",
+                "May inhibit peroxidase.",
+                "Antioxidant effects, protects against DNA damage.",
+                "Stimulates glutathione synthesis (enhances antioxidant defense)."
+            ],
+            chemical: [
+                "Synthetic alkylresorcinol.",
+                "Generally considered stable. Lipophilic nature may aid penetration."
+            ],
+            efficacy: "Demonstrated skin-lightening effects, comparable or superior to hydroquinone at similar concentrations in some studies, but with better tolerability. Also offers anti-aging benefits (collagen stimulation, antioxidant).",
+            clinical: {
+                indications: "Hyperpigmentation, uneven skin tone, anti-aging.",
+                side_effects: "Generally well-tolerated. Lower irritation potential compared to hydroquinone. Possible mild irritation in sensitive individuals.",
+                contraindications: "Known hypersensitivity.",
+                safety: "Considered a safe and effective alternative to hydroquinone. Often used in concentrations around 0.5% to 2%."
+            },
+            speed: "Gradual; weeks to months.",
+            reliability: "Moderate to High.",
+            premiumness: "Multi-functional benefits (lightening, antioxidant, anti-aging), GRAS status for some uses, research into efficacy and tolerability."
+        },
+        "Cysteamine": {
+            mechanism: [
+                "Inhibits tyrosinase and peroxidase.",
+                "Scavenges dopaquinone.",
+                "Increases intracellular glutathione (antioxidant, shifts melanogenesis towards pheomelanin).",
+                "Chelates copper and iron ions involved in melanogenesis."
+            ],
+            chemical: [
+                "Naturally occurring aminothiol compound (metabolite of L-cysteine).",
+                "Has a characteristic sulfurous odor, which is a formulation challenge.",
+                "Stability can be an issue; often formulated as Cysteamine Hydrochloride."
+            ],
+            efficacy: "Shown to be effective for melasma and other hyperpigmentation, comparable to Kligman's formula in some studies but with fewer side effects. Requires a specific application protocol (short contact therapy initially).",
+            clinical: {
+                indications: "Melasma, PIH, lentigines.",
+                side_effects: "Characteristic sulfurous odor. Transient redness, dryness, irritation, especially early in treatment. These usually subside. Hypopigmentation not typically reported.",
+                contraindications: "Pregnancy, lactation, vitiligo history (theoretical concerns). Allergy.",
+                safety: "Generally safe when used as directed (e.g., 15-minute application then wash off). Odor and initial irritation are main compliance challenges. Non-cytotoxic."
+            },
+            speed: "Initial results in 6-8 weeks, significant improvement by 12-16 weeks.",
+            reliability: "Moderate to High.",
+            premiumness: "Formulation to mask odor and improve stability, unique short-contact application protocol, research supporting efficacy comparable to gold standards."
+        }
+    };
+
+    const glossaryData = {
+        "Achromia": "Complete absence of normal melanin pigment, resulting in white skin. Synonymous with Leukoderma.",
+        "Crusting": "Dried exudate (serum, blood, or pus) on the skin surface.",
+        "Dyschromia": "Any abnormality or alteration in skin color (hyper-, hypo-, or unusual color).",
+        "Erythema": "Redness of the skin caused by vasodilation; blanches with pressure. Different from true pigmentation.",
+        "Excoriation": "Superficial loss of epidermis due to scratching or picking; can lead to PIH.",
+        "Hyperpigmentation": "Skin darker than normal surrounding skin due to excess melanin or other pigments.",
+        "Hypopigmentation": "Skin paler than normal due to partial loss of melanin.",
+        "Lesion": "Any single, localized area of altered or abnormal skin.",
+        "Leukoderma": "White skin due to complete loss of melanin. Synonymous with Achromia.",
+        "Lichenification": "Palpable thickening of skin with accentuated skin markings from chronic rubbing.",
+        "Macule": "A flat, circumscribed area of color change, <1-1.5 cm in diameter.",
+        "Melanocyte": "Specialized cell in the basal layer of the epidermis responsible for producing melanin.",
+        "Melanogenesis": "The biochemical process of melanin production within melanocytes.",
+        "Melanosome": "Organelle within melanocytes where melanin is synthesized and stored.",
+        "Melanosis": "Excessive deposition of melanin in tissues, particularly skin or mucous membranes.",
+        "Patch": "A flat area of skin color change, >1-1.5 cm in diameter.",
+        "PIH (Post-Inflammatory Hyperpigmentation)": "Acquired hypermelanosis following cutaneous inflammation or injury.",
+        "Solar Lentigines": "Benign hyperpigmented macules (sun spots, age spots) due to chronic UV exposure.",
+        "Stratum Corneum": "Outermost layer of the epidermis, composed of dead keratinocytes; acts as a barrier.",
+        "Tyrosinase": "The key, rate-limiting enzyme in the melanin synthesis pathway."
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const navElement = document.querySelector('nav');
+        const mainElement = document.querySelector('main');
+        const navLinks = document.querySelectorAll('nav a.nav-button'); 
+        const contentSections = document.querySelectorAll('.content-section');
+        const ingredientButtonsContainer = document.getElementById('ingredientButtons');
+        const ingredientDetailContainer = document.getElementById('ingredientDetail');
+        const categorizationTableBody = document.getElementById('categorizationTableBody');
+        const glossaryContentContainer = document.getElementById('glossaryContent');
+
+        const getAIRoutineBtn = document.getElementById('getAIRoutineBtn');
+        const aiLoadingSpinner = document.getElementById('aiLoadingSpinner');
+        const aiRoutineResult = document.getElementById('aiRoutineResult');
+        const aiSkinType = document.getElementById('aiSkinType');
+        const aiConcern = document.getElementById('aiConcern');
+        const aiAvoidIngredients = document.getElementById('aiAvoidIngredients');
+
+        const burgerMenuButton = document.getElementById('burger-menu-button');
+        const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+        const desktopNavLinksContainer = document.getElementById('desktop-nav-links');
+        
+        const getStartedBtn = document.getElementById('get-started-btn');
+        const getStartedBtnMobile = document.getElementById('get-started-btn-mobile');
+        const consultationModal = document.getElementById('get-started-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const skinConsultationForm = document.getElementById('skin-consultation-form');
+        const recommendationOutput = document.getElementById('recommendation-output');
+
+
+        function setDynamicOffsets() {
+            if (navElement) {
+                const navHeight = navElement.offsetHeight;
+                document.documentElement.style.scrollPaddingTop = `${navHeight + 20}px`; 
+                document.body.style.paddingTop = `${navHeight}px`;
+            }
+        }
+        
+        setDynamicOffsets(); 
+        window.addEventListener('resize', setDynamicOffsets); 
+        window.addEventListener('scroll', function() { 
+             setDynamicOffsets();
+            let currentActive = 'home'; 
+            const navHeight = navElement ? navElement.offsetHeight : 0;
+
+            contentSections.forEach(section => {
+                const sectionTop = section.offsetTop - navHeight - 25; 
+                if (window.pageYOffset >= sectionTop) {
+                    currentActive = section.id;
+                }
+            });
+            
+            // If scrolled to the very top, 'home' should be active.
+            // The hero section (#home) is the first child of main, so its offsetTop is 0 relative to main.
+            // Body padding already accounts for nav height.
+            if (window.pageYOffset < (document.getElementById('understanding').offsetTop - navHeight - 50) ) { // Check if above the 'understanding' section
+                 currentActive = 'home';
+            }
+
+
+             document.querySelectorAll('nav a.nav-button').forEach(link => {
+                link.classList.toggle('active', link.dataset.target === currentActive);
+            });
+        });
+
+
+        function showSection(targetId, smooth = false) {
+            document.querySelectorAll('nav a.nav-button').forEach(link => {
+                link.classList.toggle('active', link.dataset.target === targetId);
+            });
+            
+            contentSections.forEach(section => {
+                section.classList.toggle('active', section.id === targetId);
+            });
+
+            if (!smooth && targetId === 'home') { 
+                 window.scrollTo({top: 0, behavior: 'auto'});
+            }
+        }
+
+        function handleNavLinkClick(event) {
+            event.preventDefault(); 
+            const targetId = this.dataset.target;
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                const navHeight = navElement ? navElement.offsetHeight : 0;
+                let scrollTargetPosition = targetSection.offsetTop - navHeight - 20;
+                
+                if (targetId === 'home') { // Home is the first section in main, scroll to top of main
+                    scrollTargetPosition = mainElement.offsetTop - navHeight -20;
+                     if (scrollTargetPosition < 0) scrollTargetPosition = 0; // Prevent negative scroll
+                }
+                
+                window.scrollTo({
+                    top: scrollTargetPosition,
+                    behavior: 'smooth'
+                });
+                
+                showSection(targetId, true); 
+
+
+                if (mobileMenuPanel && !mobileMenuPanel.classList.contains('hidden')) {
+                    mobileMenuPanel.classList.add('hidden');
+                }
+            }
+        }
+
+        document.querySelectorAll('#desktop-nav-links a.nav-button').forEach(link => {
+            link.addEventListener('click', handleNavLinkClick);
+        });
+        document.querySelectorAll('#mobile-menu-panel a.nav-button').forEach(link => {
+            link.addEventListener('click', handleNavLinkClick);
+        });
+
+
+        if (burgerMenuButton && mobileMenuPanel) {
+            burgerMenuButton.addEventListener('click', function() {
+                mobileMenuPanel.classList.toggle('hidden');
+            });
+        }
+
+        // Modal Handling
+        if (getStartedBtn && consultationModal) {
+            getStartedBtn.onclick = function(e) {
+                e.preventDefault();
+                consultationModal.style.display = "block";
+            }
+        }
+        if (getStartedBtnMobile && consultationModal) {
+             getStartedBtnMobile.onclick = function(e) {
+                e.preventDefault();
+                consultationModal.style.display = "block";
+                if (mobileMenuPanel && !mobileMenuPanel.classList.contains('hidden')) {
+                    mobileMenuPanel.classList.add('hidden');
+                }
+            }
+        }
+        if (closeModalBtn && consultationModal) {
+            closeModalBtn.onclick = function() {
+                consultationModal.style.display = "none";
+                recommendationOutput.innerHTML = ""; 
+            }
+        }
+        if (consultationModal) {
+            window.onclick = function(event) {
+                if (event.target == consultationModal) {
+                    consultationModal.style.display = "none";
+                    recommendationOutput.innerHTML = ""; 
+                }
+            }
+        }
+
+        if (skinConsultationForm) {
+            skinConsultationForm.onsubmit = function(event) {
+                event.preventDefault();
+                const hyperpigmentationType = document.getElementById('hyperpigmentation-type').value;
+                const skinType = document.getElementById('skin-type').value;
+                const sensitivity = document.getElementById('sensitivity').value;
+                const currentRoutine = document.getElementById('current-routine').value;
+                const medicalHistory = document.getElementById('medical-history').value;
+
+                if (medicalHistory !== 'none') {
+                    recommendationOutput.innerHTML = `
+                        <h3 class="text-xl font-semibold mb-3 text-indigo-300">Important Note:</h3>
+                        <p class="text-lg">Thank you for providing your information. Due to the complexities of medical history and medication interactions, we strongly recommend contacting us directly for a more personalized consultation or speaking with a dermatologist.</p>
+                        <p class="mt-3 text-lg">You can reach us on <a href="YOUR_FACEBOOK_LINK_HERE" target="_blank" class="text-blue-400 hover:underline">Facebook</a> or <a href="YOUR_INSTAGRAM_LINK_HERE" target="_blank" class="text-pink-400 hover:underline">Instagram</a>.</p>
+                    `;
+                } else {
+                    const recommendations = getIngredientRecommendations(hyperpigmentationType, skinType, sensitivity, currentRoutine, medicalHistory);
+                    recommendationOutput.innerHTML = `
+                        <h3 class="text-xl font-semibold mb-3 text-indigo-300">Our Suggestion:</h3>
+                        <p class="text-lg">${recommendations}</p>
+                        <p class="text-sm mt-3 text-gray-400">Note: This is a general suggestion. For personalized advice, please consult a dermatologist.</p>
+                    `;
+                }
+            };
+        }
+
+        function getIngredientRecommendations(hyperpigmentationType, skinType, sensitivity, currentRoutine, medicalHistory) {
+            let suggested = [];
+            if (hyperpigmentationType === 'melasma') {
+                suggested.push("Azelaic Acid", "Niacinamide", "Tranexamic Acid");
+                if (sensitivity !== 'retinoid-sensitive') {
+                    suggested.push("Low-strength Retinoid (start slow)");
+                }
+            } else if (hyperpigmentationType === 'pih') {
+                suggested.push("Niacinamide", "Vitamin C", "Azelaic Acid", "Licorice Extract");
+            } else if (hyperpigmentationType === 'solar-lentigines') {
+                 suggested.push("Vitamin C", "Retinoids", "AHAs (e.g., Glycolic Acid)");
+            } else { // General, Other, Unsure
+                suggested.push("Niacinamide", "Vitamin C", "Licorice Extract", "Azelaic Acid (gentle option)");
+            }
+
+            if (sensitivity === 'eczema-prone' || sensitivity === 'rosacea-prone' || sensitivity === 'aha-bha-sensitive') {
+                suggested = suggested.filter(ing => !ing.includes("AHA") && !ing.includes("BHA") && !ing.toLowerCase().includes("retinoid"));
+                suggested.push("Bakuchiol (gentle retinoid alternative if needed and tolerated)");
+            }
+            if (sensitivity === 'fragrance-sensitive') {
+                // This implies a formulation consideration, not a specific active ingredient change
+            }
+            
+            suggested = [...new Set(suggested)]; 
+
+            if (suggested.length > 0) {
+                return "Consider incorporating products with: " + suggested.join(', ') + ". Always patch test new ingredients and introduce them one at a time. Sunscreen (SPF 30+) daily is crucial.";
+            } else {
+                return "Based on your selections, it's best to consult a dermatologist for tailored advice.";
+            }
+        }
+
+
+        Object.keys(ingredientData).forEach(name => {
+            const button = document.createElement('button');
+            let buttonClasses = 'ingredient-button text-sm'; 
+            
+            if (name === "Alpha Hydroxy Acids (AHAs)" || name === "Beta Hydroxy Acids (BHAs)") {
+                buttonClasses += ' whitespace-normal'; 
+            } else {
+                buttonClasses += ' whitespace-nowrap'; 
+            }
+            
+            button.className = buttonClasses;
+            button.textContent = name;
+            button.dataset.ingredient = name;
+
+            button.addEventListener('click', function() {
+                displayIngredientDetails(name);
+                document.querySelectorAll('#ingredientButtons .ingredient-button').forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+            if (ingredientButtonsContainer) ingredientButtonsContainer.appendChild(button);
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${name}</td>
+                <td>${ingredientData[name].speed || 'Variable'}</td>
+                <td>${ingredientData[name].reliability || 'Variable'}</td>
+                <td>${ingredientData[name].premiumness || 'N/A'}</td>
+            `;
+            if (categorizationTableBody) categorizationTableBody.appendChild(tr);
+        });
+        
+        function displayIngredientDetails(name) {
+            const data = ingredientData[name];
+            if (!data || !ingredientDetailContainer) {
+                if (ingredientDetailContainer) ingredientDetailContainer.innerHTML = `<p class="text-gray-400 italic text-lg">Details not found for ${name}.</p>`;
+                return;
+            }
+
+            let html = `<h3 class="text-2xl font-semibold mb-4">${name}</h3>`;
+            if (data.mechanism) {
+                html += `<h4 class="text-xl font-semibold mt-5 mb-2">Mechanism of Action:</h4><ul class="list-disc list-inside space-y-1 text-lg">`;
+                data.mechanism.forEach(item => html += `<li>${item}</li>`);
+                html += `</ul>`;
+            }
+            if (data.chemical) {
+                html += `<h4 class="text-xl font-semibold mt-5 mb-2">Chemical Properties:</h4><ul class="list-disc list-inside space-y-1 text-lg">`;
+                data.chemical.forEach(item => html += `<li>${item}</li>`);
+                html += `</ul>`;
+            }
+            if (data.efficacy) {
+                html += `<h4 class="text-xl font-semibold mt-5 mb-2">Efficacy Summary:</h4><p class="text-lg leading-relaxed">${data.efficacy}</p>`;
+            }
+            if (data.clinical) {
+                html += `<h4 class="text-xl font-semibold mt-5 mb-2">Clinical Profile:</h4><div class="space-y-2 text-lg">`;
+                if(data.clinical.indications) html += `<p><strong>Indications:</strong> ${data.clinical.indications}</p>`;
+                if(data.clinical.side_effects) html += `<p><strong>Potential Side Effects:</strong> ${data.clinical.side_effects}</p>`;
+                if(data.clinical.contraindications) html += `<p><strong>Contraindications:</strong> ${data.clinical.contraindications}</p>`;
+                if(data.clinical.safety) html += `<p><strong>General Safety Considerations:</strong> ${data.clinical.safety}</p></div>`;
+            }
+            ingredientDetailContainer.innerHTML = html;
+        }
+
+        const sortedGlossaryKeys = Object.keys(glossaryData).sort();
+        sortedGlossaryKeys.forEach(term => {
+            const termDiv = document.createElement('div');
+            termDiv.innerHTML = `<p><strong class="glossary-term">${term}:</strong> ${glossaryData[term]}</p>`;
+            if (glossaryContentContainer) glossaryContentContainer.appendChild(termDiv);
+        });
+
+        const potencyChartCanvas = document.getElementById('potencyChart');
+        if (potencyChartCanvas) {
+            const ctx = potencyChartCanvas.getContext('2d');
+            Chart.defaults.color = '#A5B4FC'; 
+            Chart.defaults.borderColor = 'rgba(129, 140, 248, 0.25)'; 
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Thiamidol', 'Kojic Acid', 'Hydroquinone'],
+                    datasets: [{
+                        label: 'IC50 (µmol/L) vs Human Tyrosinase (Lower is More Potent)',
+                        data: [1.1, 500, 4000],
+                        backgroundColor: ['rgba(129, 140, 248, 0.7)', 'rgba(99, 102, 241, 0.7)', 'rgba(79, 70, 229, 0.7)'], 
+                        borderColor: ['#818CF8', '#6366F1', '#4F46E5'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            type: 'logarithmic', 
+                            title: { display: true, text: 'IC50 (µmol/L) - Logarithmic Scale', color: '#C7D2FE'},
+                            grid: { color: 'rgba(129, 140, 248, 0.2)' },
+                            ticks: { color: '#A5B4FC' }
+                        },
+                        x: { 
+                            title: { display: true, text: 'Ingredient', color: '#C7D2FE'},
+                            grid: { display: false }, 
+                            ticks: { color: '#A5B4FC' }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            backgroundColor: 'rgba(17, 24, 39, 0.9)', 
+                            titleColor: '#E0E7FF', 
+                            bodyColor: '#C7D2FE', 
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) label += context.parsed.y + ' µmol/L';
+                                    if (context.label === 'Kojic Acid' || context.label === 'Hydroquinone') label += ' (approx. or greater than value shown)';
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+         // Scroll-triggered fade-in animations for content sections
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // obs.unobserve(entry.target); // Optional: stop observing after first time
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.content-section').forEach(section => { 
+            section.classList.add('scroll-fade-in'); 
+            observer.observe(section);
+        });
+        
+
+
+        if (getAIRoutineBtn) {
+            getAIRoutineBtn.addEventListener('click', async () => {
+                const skinType = aiSkinType.value;
+                const concern = aiConcern.value;
+                const avoid = aiAvoidIngredients.value.trim();
+
+                aiLoadingSpinner.classList.remove('hidden');
+                getAIRoutineBtn.disabled = true;
+                aiRoutineResult.innerHTML = '<p class="text-indigo-300 italic text-lg">✨ Generating your personalized routine suggestion...</p>';
+
+                let prompt = `You are an expert skincare formulation chemist and dermatologist. Based on the following user information, suggest a simple daily (morning and evening) skincare routine to help with their pigmentation concern.
+User Skin Type: ${skinType}
+Primary Pigmentation Concern: ${concern}
+`;
+                if (avoid) {
+                    prompt += `Ingredients to avoid or currently using: ${avoid}\n`;
+                }
+                prompt += `
+The routine should focus on addressing the pigmentation concern while being suitable for the user's skin type.
+Suggest general product types (e.g., "gentle cleanser", "hydrating serum with Niacinamide", "broad-spectrum SPF 50 sunscreen") rather than specific brands.
+If possible, incorporate some of these known effective ingredients for pigmentation, ensuring they are appropriate for the skin type and concern: ${Object.keys(ingredientData).join(', ')}.
+Provide the routine in a clear, step-by-step format for morning and evening. Use markdown for formatting, like using '#' for headers, '*' for bullet points and '**' for bold.
+
+Example Output Format:
+### Morning Routine
+* **Step 1: Cleanse** - Use a gentle, hydrating cleanser.
+* **Step 2: Treat** - Apply an antioxidant serum (like Vitamin C).
+* **Step 3: Moisturize** - Use a lightweight, non-comedogenic moisturizer.
+* **Step 4: Protect** - Apply a broad-spectrum sunscreen with SPF 50+.
+
+### Evening Routine
+* **Step 1: Cleanse** - Gently cleanse the skin.
+* **Step 2: Treat** - Apply a treatment serum (e.g., with Niacinamide or Azelaic Acid).
+* **Step 3: Moisturize** - Use a suitable moisturizer.
+
+### Important Notes
+* **Sunscreen is non-negotiable.** It's the most critical step to prevent further pigmentation.
+* **Introduce new active ingredients slowly** (e.g., 2-3 times a week initially) to assess tolerance.
+* **Consistency is key** to seeing results.
+`;
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; 
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error("API Error:", errorData);
+                        throw new Error(`API request failed with status ${response.status}: ${errorData.error?.message || response.statusText}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        let text = result.candidates[0].content.parts[0].text;
+                        
+                        text = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                        text = text.replace(/###\s*(.*)/g, '<h5 class="!mt-5 !mb-3 text-indigo-200">$1</h5>');
+                        text = text.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong class="text-indigo-300">$1</strong>');
+                        text = text.replace(/^\s*\*\s+(.*)/gm, '<li class="!mb-1.5 text-indigo-100">$1</li>');
+                        text = text.replace(/(\<ul>)?(<li>.*?<\/li>)+(\<\/ul>)?/g, (match, p1, p2, p3) => {
+                            if (p1 && p3) return match;
+                            return `<ul class="list-disc list-inside space-y-1.5">${match.match(/<li>.*?<\/li>/g).join('')}</ul>`;
+                        });
+
+                        aiRoutineResult.innerHTML = `<h4 class="text-xl font-semibold mb-5 text-indigo-200">✨ Your AI Skincare Routine Suggestion:</h4><div class="prose max-w-none text-lg leading-relaxed">${text}</div>`;
+                    } else {
+                        console.error("Unexpected API response structure:", result);
+                        aiRoutineResult.innerHTML = '<p class="text-red-400 text-lg">Could not retrieve a suggestion at this time. The response from the AI was not in the expected format.</p>';
+                    }
+                } catch (error) {
+                    console.error('Error fetching AI routine:', error);
+                    aiRoutineResult.innerHTML = `<p class="text-red-400 text-lg">An error occurred while generating your routine: ${error.message}. Please try again later.</p>`;
+                } finally {
+                    aiLoadingSpinner.classList.add('hidden');
+                    getAIRoutineBtn.disabled = false;
+                }
+            });
+        }
+        showSection('home', false); 
+    });
+
+    function openDisorderTab(event, disorderName) {
+        var i, tabcontent, tabbuttons;
+        const understandingSection = document.getElementById("understanding");
+        if (!understandingSection) return;
+        tabcontent = understandingSection.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        tabbuttons = understandingSection.getElementsByClassName("tab-button");
+        for (i = 0; i < tabbuttons.length; i++) { 
+            tabbuttons[i].classList.remove("active");
+        }
+        const targetTab = document.getElementById(disorderName);
+        if (targetTab) {
+            targetTab.style.display = "block";
+            targetTab.classList.add("active");
+        }
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add("active");
+        }
+    }
+</script>
+</body>
+</html>
