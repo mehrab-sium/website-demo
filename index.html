@@ -383,7 +383,10 @@
             color: #E0E7FF;
         }
         #recommendation-output h3 { color: #A5B4FC; }
-        #recommendation-output p { margin-bottom: 0.5rem; }
+        #recommendation-output p { margin-bottom: 0.5rem; line-height: 1.6; }
+        #recommendation-output ul { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+        #recommendation-output li { margin-bottom: 0.3rem; }
+
 
     </style>
 </head>
@@ -574,8 +577,7 @@
 
             <section id="aiHelper" class="content-section">
                 <h2 class="text-3xl font-semibold mb-6">✨ AI Skincare Helper</h2>
-                <p class="mb-4 text-lg leading-relaxed">Get a personalized skincare routine suggestion from our AI! Please provide some information about your skin and concerns.</p>
-                <p class="mb-8 text-sm text-indigo-400"><strong>Important:</strong> The AI Helper requires an API key to function when deployed. If you are seeing errors, this might be the cause. For production use, a backend proxy is recommended for API key security.</p>
+                <p class="mb-8 text-lg leading-relaxed">Get a personalized skincare routine suggestion from our AI! Please provide some information about your skin and concerns. This tool provides general suggestions and is not a substitute for professional dermatological advice.</p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                     <div>
@@ -1105,7 +1107,10 @@
                 }
             });
             
-            if (window.pageYOffset < (document.getElementById('understanding').offsetTop - navHeight - 50) ) { 
+            // If scrolled to the very top, 'home' should be active.
+            // The hero section (#home) is the first child of main, so its offsetTop is 0 relative to main.
+            // Body padding already accounts for nav height.
+             if (window.pageYOffset < (document.getElementById('understanding').offsetTop - navHeight - 50) && document.getElementById('understanding') ) { 
                  currentActive = 'home';
             }
 
@@ -1137,9 +1142,14 @@
             
             if (targetSection) {
                 const navHeight = navElement ? navElement.offsetHeight : 0;
+                // Calculate the target scroll position: section's top offset from document, minus nav height, minus a small buffer
                 let scrollTargetPosition = targetSection.offsetTop - navHeight - 20;
                 
-                if (targetId === 'home') { 
+                // For the "Home" link, we want to scroll to the very top of the document (0),
+                // as the body padding already accounts for the nav height.
+                if (targetId === 'home') {
+                    // Since #home is the first section in main, and main is pushed down by body's padding-top,
+                    // scrolling to 0 will show the top of the #home section correctly below the nav.
                     scrollTargetPosition = 0; 
                 }
                 
