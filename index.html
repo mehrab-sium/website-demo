@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Guide to Skin Pigmentation & Treatments</title>
+    <title>Interactive Guide to Skin Pigmentation & Treatments - CYNORA®</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         html {
             scroll-behavior: smooth;
-            /* scroll-padding-top will be set by JS */
         }
         body {
-            font-family: 'Inter', sans-serif;
-            color: #D1D5DB; 
+            /* Updated body font to Josefin Sans */
+            font-family: 'Josefin Sans', sans-serif;
+            color: #D1D5DB; /* Tailwind gray-300 */
             position: relative; 
             min-height: 100vh;
-            background: linear-gradient(145deg, #0f0c29 0%, #1a2a6c 50%, #004e5f 100%); 
             overflow-x: hidden;
-            /* padding-top will be set by JS to accommodate the fixed nav */
+            background-color: #030712; /* Tailwind gray-950 - Very dark fallback */
+            -webkit-font-smoothing: antialiased; /* For smoother font rendering on WebKit */
+            -moz-osx-font-smoothing: grayscale; /* For smoother font rendering on Firefox */
         }
         body::before { 
             content: "";
@@ -30,15 +31,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1920&q=80'); 
+            background-image: url('https://i.imgur.com/gYrIoQm.jpeg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            filter: blur(16px) brightness(0.4) saturate(1.2); 
-            opacity: 0.35; 
+            filter: blur(16px) brightness(0.3) saturate(100%);
+            opacity: 0.6; 
             z-index: -1; 
         }
         
+        /* Animation Keyframes */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInRight { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
@@ -50,346 +52,382 @@
         .scroll-fade-in { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
         .scroll-fade-in.visible { opacity: 1; transform: translateY(0); }
 
+        /* Navigation Styling */
         nav {
-            background-color: rgba(17, 24, 39, 0.85); 
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px); 
-            border-bottom: 1px solid rgba(79, 70, 229, 0.35); 
-            padding: 0.75rem 0; 
+            background-color: rgba(20, 22, 25, 0.6); 
+            backdrop-filter: blur(18px) saturate(100%); 
+            -webkit-backdrop-filter: blur(18px) saturate(100%); 
+            border-bottom: 1px solid rgba(200, 200, 200, 0.07); 
+            padding: 0.75rem 0; /* Adjusted padding for a sleeker nav */
             position: fixed; 
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
+            top: 0; left: 0; right: 0; width: 100%;
             z-index: 50; 
+            transition: background-color 0.3s ease; /* Smooth transition for nav bg if it changes */
         }
         
         .brand-in-nav {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.35rem; 
-            font-weight: 700;
-            color: #E0E7FF; 
+            font-size: 1.3rem; /* Slightly adjusted size */
+            color: #F3F4F6; 
             letter-spacing: 0.03em;
+            transition: transform 0.3s ease; /* Smooth transform on hover */
         }
-
-        .nav-links-container {
-            display: flex;
-            justify-content: center; 
-            align-items: center;
-            flex-grow: 1; 
+        .brand-in-nav:hover {
+            transform: scale(1.02); /* Subtle scale effect */
+        }
+        .brand-in-nav.helvetica-neue-cynora {
+            font-family: "Helvetica Neue", 'Poppins', sans-serif; 
+            font-weight: normal; 
+        }
+        .brand-in-nav.helvetica-neue-cynora .reg-symbol {
+            font-size: 0.6em; vertical-align: super; font-weight: 400; 
+            letter-spacing: normal; display: inline-block; line-height: 1; 
         }
 
         .nav-button {
-            padding: 0.6rem 1.1rem; 
+            /* Updated nav button font to Outfit */
+            font-family: 'Outfit', sans-serif;
+            padding: 0.5rem 1rem; /* Adjusted padding */
             border-radius: 0.375rem; 
-            transition: background-color 0.3s, color 0.3s, transform 0.2s;
-            cursor: pointer;
-            font-weight: 500; 
-            font-size: 0.9rem; 
-            color: #A5B4FC; 
-            white-space: nowrap;
-            position: relative;
+            transition: color 0.3s ease, transform 0.2s ease; /* Added ease to transitions */
+            cursor: pointer; font-weight: 500; font-size: 0.95rem; /* Adjusted font size */
+            color: #CBD5E1; /* Tailwind slate-300, slightly lighter for better contrast */
+            white-space: nowrap; position: relative;
         }
-        
         .nav-button::after { 
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px; 
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #00E0FF; 
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -4px; /* Adjusted position */
+            left: 50%; transform: translateX(-50%);
+            background-color: #6EE7B7; 
             transition: width 0.3s ease-in-out;
         }
-        .nav-button:hover::after, .nav-button.active::after {
-            width: 70%;
-        }
-        .nav-button:hover {
-            color: #00E0FF; 
-            transform: scale(1.03);
-        }
-        .nav-button.active {
-            color: #FFFFFF;
-            font-weight: 600;
-        }
+        .nav-button:hover::after, .nav-button.active::after { width: 60%; } /* Slightly reduced underline width */
+        .nav-button:hover { color: #F8FAFC; transform: translateY(-1px); } /* Tailwind slate-50, subtle lift */
+        .nav-button.active { color: #FFFFFF; font-weight: 600; } /* White for active */
         
         .cta-button {
-            padding: 0.6rem 1.2rem;
+            /* Updated CTA button font to Outfit */
+            font-family: 'Outfit', sans-serif;
+            padding: 0.5rem 1.1rem; /* Adjusted padding */
             border-radius: 0.375rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #FFFFFF;
-            background-image: linear-gradient(to right, #3B82F6, #6366F1); 
+            font-weight: 600; font-size: 0.95rem; color: #F9FAFB; 
+            background-color: rgba(56, 189, 248, 0.2); /* Tailwind sky-400 with alpha */
+            border: 1px solid rgba(56, 189, 248, 0.5); /* Subtle border */
             transition: all 0.3s ease-in-out;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Softer shadow */
             white-space: nowrap;
         }
-       
         .cta-button:hover {
-            background-image: linear-gradient(to right, #2563EB, #4F46E5); 
+            background-color: rgba(56, 189, 248, 0.3); 
+            border-color: rgba(56, 189, 248, 0.7);
             transform: translateY(-1px) scale(1.03);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+            box-shadow: 0 3px 8px rgba(56, 189, 248, 0.2); /* Enhanced shadow on hover */
         }
 
         #mobile-menu-panel {
-            background-color: rgba(17, 24, 39, 0.95); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(79, 70, 229, 0.3);
-            position: absolute; 
-            left:0;
-            right:0;
-            top: 100%; 
-            z-index: 45; 
+            background-color: rgba(20, 22, 25, 0.75); 
+            backdrop-filter: blur(18px) saturate(100%); -webkit-backdrop-filter: blur(18px) saturate(100%);
+            border-top: 1px solid rgba(200, 200, 200, 0.07); 
+            position: absolute; left:0; right:0; top: 100%; z-index: 45; 
         }
         #mobile-menu-panel .nav-button {
-            display: block;
-            width: 100%;
-            text-align: center; 
-            padding: 1rem 1.5rem;
-            font-size: 1.1rem; 
-            color: #A5B4FC;
-            border-radius: 0; 
+            /* Ensure mobile nav buttons also use Outfit */
+            font-family: 'Outfit', sans-serif;
+            display: block; width: 100%; text-align: center; 
+            padding: 1rem 1.5rem; font-size: 1.1rem; color: #CBD5E1; border-radius: 0; 
         }
-        #mobile-menu-panel .nav-button.active {
-            background-color: #4F46E5; color: #FFFFFF;
+        #mobile-menu-panel .nav-button.active { background-color: rgba(55, 65, 81, 0.3); color: #F9FAFB; }
+        #mobile-menu-panel .nav-button:hover { background-color: rgba(75, 85, 99, 0.2); color: #F9FAFB; }
+
+        /* Main Content Sections - Single Glass Panel */
+        #home.hero-landing-content, .content-section { 
+            background-color: rgba(20, 22, 25, 0.5); 
+            backdrop-filter: blur(22px) saturate(100%); 
+            -webkit-backdrop-filter: blur(22px) saturate(100%);
+            border: 1px solid rgba(200, 200, 200, 0.07); 
+            border-radius: 0.75rem; 
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.65); 
+            transition: transform 0.4s ease-out, box-shadow 0.4s ease-out; /* Smooth transition for sections */
         }
-         #mobile-menu-panel .nav-button:hover {
-            background-color: rgba(79, 70, 229, 0.3); color: #FFFFFF;
-         }
+        #home.hero-landing-content:hover, .content-section:hover {
+            /* Subtle lift effect on section hover - optional */
+            /* transform: translateY(-3px); */
+            /* box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); */
+        }
 
         #home.hero-landing-content { 
-            padding: 6rem 2rem 4rem; 
-            text-align: center;
-            background-color: rgba(23, 23, 43, 0.75); 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(129, 140, 248, 0.2); 
-            border-radius: 0.75rem; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); 
-            margin: 0 auto 2rem auto; 
-            max-width: 90%; 
-        }
-        #home.hero-landing-content h1 {
-             color: #E0E7FF; 
-             font-weight: 800; 
-             font-size: 2.5rem; 
-             margin-bottom: 1.5rem;
-        }
-        #home.hero-landing-content p {
-            color: #9CA3AF; 
-            font-size: 1.125rem; 
-            max-width: 42rem; 
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.75;
+            padding: 7rem 1.5rem 5rem; /* Adjusted padding */
+            text-align: center; 
+            margin: 0 auto 2.5rem auto; /* Adjusted margin */
+            max-width: 95%; /* Slightly wider for better fit */
         }
         @media (min-width: 768px) {
-            #home.hero-landing-content h1 {
-                font-size: 3.75rem; 
-            }
-            #home.hero-landing-content p {
-                font-size: 1.25rem; 
-            }
+             #home.hero-landing-content { padding: 8rem 2rem 6rem; max-width: 90%;}
+        }
+         @media (min-width: 1024px) {
+             #home.hero-landing-content { padding: 9rem 2rem 7rem; max-width: 85%;}
         }
 
 
         .content-section { 
-            display: none;
-            padding: 3rem; 
-            background-color: rgba(23, 23, 43, 0.75); 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(129, 140, 248, 0.2); 
-            border-radius: 0.75rem; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); 
-            margin-bottom: 3rem; 
-            opacity: 0;
+            display: none; 
+            padding: 2rem; /* Base padding */
+            margin-bottom: 2.5rem; /* Base margin */
+            opacity: 0; 
             color: #D1D5DB; 
         }
-        .content-section.active {
-            display: block;
-            opacity: 1;
+        @media (min-width: 768px) { .content-section { padding: 3rem; margin-bottom: 3rem; } }
+        @media (min-width: 1024px) { .content-section { padding: 3.5rem; margin-bottom: 3.5rem; } }
+
+
+        .content-section.active { display: block; opacity: 1; }
+        
+        /* Responsive Typography for Headings */
+        #home.hero-landing-content h1 { 
+            color: #F3F4F6; font-weight: 700; /* Josefin Sans bold */
+            font-size: 2.25rem; /* Base for mobile */
+            line-height: 1.2; margin-bottom: 1.25rem; 
+            transition: font-size 0.3s ease;
+        }
+        #home.hero-landing-content p { 
+            color: #A0AEC0; 
+            font-size: 1.05rem; /* Base for mobile */
+            max-width: 40rem; margin-left: auto; margin-right: auto; 
+            line-height: 1.7;
+            transition: font-size 0.3s ease;
+        }
+
+        @media (min-width: 640px) { /* sm */
+            #home.hero-landing-content h1 { font-size: 2.75rem; }
+            #home.hero-landing-content p { font-size: 1.1rem; }
+        }
+        @media (min-width: 768px) { /* md */
+            #home.hero-landing-content h1 { font-size: 3.25rem; }
+            #home.hero-landing-content p { font-size: 1.15rem; max-width: 42rem; }
+        }
+        @media (min-width: 1024px) { /* lg */
+            #home.hero-landing-content h1 { font-size: 3.75rem; }
+            #home.hero-landing-content p { font-size: 1.25rem; max-width: 45rem; }
         }
         
-        .content-section h2, .content-section h3, .content-section h4 {
-            color: #A5B4FC; 
+        .content-section h2 { 
+            color: #E5E7EB; font-size: 1.75rem; margin-bottom: 1.25rem; font-weight: 600; /* Josefin Sans semibold */
+            line-height: 1.3; transition: font-size 0.3s ease;
         }
-        .content-section strong {
-             color: #C7D2FE; 
+        .content-section h3 { 
+            color: #E5E7EB; font-size: 1.4rem; margin-top: 1.75rem; margin-bottom: 1rem; font-weight: 600; 
+            line-height: 1.3; transition: font-size 0.3s ease;
         }
-        .content-section ul { list-style-type: disc; margin-left: 1.5rem;}
-        .content-section ol { list-style-type: decimal; margin-left: 1.5rem;}
+        .content-section h4 { 
+            color: #E5E7EB; font-size: 1.15rem; margin-top: 1.5rem; margin-bottom: 0.75rem; font-weight: 500; /* Josefin Sans medium */
+            line-height: 1.4; transition: font-size 0.3s ease;
+        }
+        .content-section p, .content-section li { 
+            margin-bottom: 0.85rem; line-height: 1.8; font-weight: 400; /* Josefin Sans normal */
+            font-size: 1rem; /* Base paragraph size */
+            transition: font-size 0.3s ease;
+        }
 
+        @media (min-width: 768px) {
+            .content-section h2 { font-size: 2rem; margin-bottom: 1.5rem; }
+            .content-section h3 { font-size: 1.6rem; margin-top: 2rem; }
+            .content-section h4 { font-size: 1.25rem; }
+            .content-section p, .content-section li { font-size: 1.05rem; }
+        }
+         @media (min-width: 1024px) {
+            .content-section h2 { font-size: 2.25rem; }
+            .content-section h3 { font-size: 1.75rem; }
+            .content-section h4 { font-size: 1.35rem; }
+            .content-section p, .content-section li { font-size: 1.1rem; }
+        }
+
+
+        .content-section strong { color: #F3F4F6; font-weight: 600; } 
+        .content-section ul { list-style-type: disc; margin-left: 1.5rem; padding-left: 0.5rem;}
+        .content-section ol { list-style-type: decimal; margin-left: 1.5rem; padding-left: 0.5rem;}
+
+        .skin-layer-diagram, #ingredientDetail, .chart-container,
+        #combinations > div:not(.overflow-x-auto), 
+        #combinations .grid > div, 
+        #aiRoutineResult { 
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important; 
+            margin-top: 1.5rem; 
+        }
+        .skin-layer-diagram div { 
+             border: 1px solid rgba(107, 114, 128, 0.15); 
+             color: #9CA3AF;
+             padding: 0.5rem; margin-bottom: 0.25rem;
+             border-radius: 0.25rem; /* Subtle rounding */
+        }
+        #ingredientDetail > h3 { margin-top: 0; } 
+        .chart-container { min-height: 300px; max-height: 350px; /* Adjusted for responsiveness */ }
+        @media (min-width: 768px) { .chart-container { min-height: 350px; max-height: 400px; } }
+        .chart-container canvas { margin-top: 1rem; width: 100% !important; height: auto !important; } 
 
         .ingredient-button {
-            background-color: rgba(79, 70, 229, 0.15); 
-            color: #A5B4FC; 
-            border: 1px solid rgba(129, 140, 248, 0.3);
+            background-color: rgba(55, 65, 81, 0.25); /* Tailwind gray-700 with alpha */
+            color: #CBD5E1; /* slate-300 */
+            border: 1px solid rgba(107, 114, 128, 0.2); /* gray-500 with alpha */
+            font-weight: 500; /* Josefin Sans medium */
+            font-size: 0.9rem; /* Adjusted size */
+            transition: all 0.25s ease-out; /* Smoother transition */
         }
         .ingredient-button:hover {
-            background-color: rgba(79, 70, 229, 0.3); 
-            border-color: #818CF8; 
-            color: #E0E7FF; 
+            background-color: rgba(71, 85, 105, 0.4); /* Tailwind slate-600 with alpha */
+            border-color: #94A3B8; /* slate-400 */
+            color: #F1F5F9; /* slate-100 */
+            transform: translateY(-1px);
         }
         .ingredient-button.selected {
-            background-color: #4F46E5; 
-            color: #FFFFFF;
-            border-color: #4F46E5;
+            background-color: rgba(76, 145, 170, 0.5); /* Custom tealish color */
+            color: #FFFFFF; border-color: rgba(76, 145, 170, 0.7);
+            font-weight: 600; /* Josefin Sans semibold */
+            box-shadow: 0 0 10px rgba(76, 145, 170, 0.3); /* Subtle glow */
         }
         .tab-button {
-            background-color: transparent;
-            color: #A5B4FC;
-            border-color: rgba(129, 140, 248, 0.3);
+            background-color: transparent; color: #9CA3AF; 
+            border-color: transparent; 
+            border-bottom: 2px solid transparent; 
+            padding-bottom: 0.5rem; margin-right: 0.5rem;
+            transition: color 0.3s ease, border-color 0.3s ease; /* Added ease */
+            font-weight: 500; /* Josefin Sans medium */
+            font-size: 0.95rem; /* Adjusted size */
         }
         .tab-button.active {
-            background-color: rgba(79, 70, 229, 0.2);
-            color: #E0E7FF;
-            border-top-color: #818CF8;
+            color: #E5E7EB; 
+            border-bottom-color: #6EE7B7; 
+            font-weight: 600; /* Josefin Sans semibold */
         }
-        .tab-content {
-            background-color: rgba(40, 40, 60, 0.4);
-            border-color: rgba(129, 140, 248, 0.3);
+        .tab-content { 
+            background-color: transparent;
+            border: none;
+            padding-top: 1rem; 
         }
-        .chart-container {
-            background-color: rgba(23, 23, 43, 0.7);
-            border-color: rgba(129, 140, 248, 0.25);
-        }
-        table { margin-top: 1.5rem; }
+        
+        table { margin-top: 1.5rem; width: 100%; border-collapse: collapse;}
         th, td {
-            border: 1px solid rgba(129, 140, 248, 0.2); 
-            padding: 1rem; 
-            text-align: left;
-            color: #D1D5DB; 
+            border: 1px solid rgba(55, 65, 81, 0.2); 
+            padding: 0.75rem; text-align: left; color: #D1D5DB; 
+            font-weight: 400; 
+            font-size: 0.95rem; /* Adjusted for Josefin Sans */
         }
         th {
-            background-color: rgba(79, 70, 229, 0.2); 
-            color: #E0E7FF; 
+            background-color: rgba(55, 65, 81, 0.15); 
+            color: #E5E7EB; font-weight: 600; /* Josefin Sans semibold */
+            font-size: 1rem; /* Adjusted */
         }
-        .glossary-term { color: #818CF8; }
-        .skin-layer-diagram div {
-            border: 1px solid rgba(129, 140, 248, 0.4);
-            color: #A5B4FC;
-        }
-        .skin-layer-diagram .epidermis { background-color: rgba(79, 70, 229, 0.15); } 
-        .skin-layer-diagram .dermis { background-color: rgba(79, 70, 229, 0.25); }    
-        .skin-layer-diagram .hypodermis { background-color: rgba(79, 70, 229, 0.35); } 
+        .glossary-term { color: #6EE7B7; font-weight: 600; } 
 
-        #aiHelper label { color: #A5B4FC; }
+        #aiHelper label { color: #CBD5E1; font-weight: 500; font-size: 0.95rem; } 
         #aiHelper select, #aiHelper input[type="text"] {
-            background-color: rgba(40, 40, 60, 0.7);
-            color: #E0E7FF;
-            border: 1px solid rgba(129, 140, 248, 0.3); 
+            background-color: rgba(31, 41, 55, 0.4); 
+            color: #E5E7EB; border: 1px solid rgba(107, 114, 128, 0.2); 
+            font-weight: 400; 
+            font-size: 0.95rem; /* Ensure consistent font size */
+            padding: 0.6rem 0.75rem; /* Adjusted padding */
         }
-        #aiHelper select option {
-            background-color: #17172B; 
-            color: #E0E7FF;
-        }
-        #aiHelper input[type="text"]::placeholder {
-            color: #6B7280; 
-        }
+        #aiHelper select option { background-color: #111827; color: #E5E7EB; } 
+        #aiHelper input[type="text"]::placeholder { color: #6B7280; } 
+        
         #getAIRoutineBtn {
-            background-image: linear-gradient(to right, #4338CA, #6D28D9); 
-            color: #FFFFFF;
+            background-color: rgba(56, 189, 248, 0.25); /* Tailwind sky-400 with alpha */
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: #F9FAFB;
+            font-weight: 600; /* Josefin Sans semibold */
+            font-size: 1rem; /* Adjusted */
+            padding: 0.6rem 1.25rem; /* Adjusted */
+            transition: all 0.3s ease; /* Added ease */
         }
         #getAIRoutineBtn:hover {
-             background-image: linear-gradient(to right, #4F46E5, #7C3AED);
-             transform: translateY(-1px);
+             background-color: rgba(56, 189, 248, 0.35); 
+             border-color: rgba(56, 189, 248, 0.7);
+             transform: translateY(-1px) scale(1.02); /* More subtle scale */
         }
+        
         footer {
-            background-color: rgba(17,24,39,0.8);
-            border-top: 1px solid rgba(129, 140, 248, 0.2);
+            background-color: rgba(10, 10, 15, 0.5); 
+            border-top: 1px solid rgba(55, 65, 81, 0.1); 
+            padding: 2rem 1rem; /* Added padding */
         }
-        footer p { color: #9CA3AF; }
+        footer p { color: #9CA3AF; font-weight: 400; font-size: 0.9rem; } /* Adjusted size */
 
-        /* Modal Styling */
         .modal {
-            display: none; 
-            position: fixed;
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7); 
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            display: none; position: fixed; z-index: 1000; 
+            left: 0; top: 0; width: 100%; height: 100%;
+            overflow: auto; background-color: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            transition: opacity 0.3s ease; /* Smooth modal fade */
         }
         .modal-content {
-            background-color: rgba(23, 23, 43, 0.9); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            margin: 10% auto;
-            padding: 2.5rem;
-            border: 1px solid rgba(129, 140, 248, 0.4);
-            border-radius: 0.75rem;
-            width: 90%;
-            max-width: 650px; 
-            color: #D1D5DB;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background-color: rgba(20, 22, 25, 0.7); 
+            backdrop-filter: blur(20px) saturate(100%); 
+            -webkit-backdrop-filter: blur(20px) saturate(100%);
+            margin: 8% auto; /* Adjusted margin for better centering */
+            padding: 2rem; /* Adjusted padding */
+            border: 1px solid rgba(156, 163, 175, 0.08); 
+            border-radius: 0.75rem; width: 90%; max-width: 600px; /* Adjusted max-width */
+            color: #D1D5DB; box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            transform: scale(0.95); /* Initial state for pop animation */
+            opacity: 0; /* Initial state for fade animation */
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Smooth pop and fade */
         }
-        .modal-content h2 { color: #A5B4FC; margin-bottom: 1.5rem; font-size: 1.75rem;}
-        .modal-content label { color: #A5B4FC; margin-bottom: 0.5rem; display: block; font-weight: 500;}
+        .modal.active .modal-content { /* For JS to trigger animation */
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-content h2 { color: #E5E7EB; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 600;} /* Adjusted */
+        .modal-content label { color: #CBD5E1; margin-bottom: 0.5rem; display: block; font-weight: 500; font-size: 0.9rem;} /* Adjusted */
         .modal-content select, .modal-content input[type="text"], .modal-content textarea {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1.25rem; 
-            border-radius: 0.375rem;
-            border: 1px solid rgba(129, 140, 248, 0.4);
-            background-color: rgba(40, 40, 60, 0.8);
-            color: #E0E7FF;
-            transition: border-color 0.3s;
+            width: 100%; padding: 0.6rem 0.75rem; margin-bottom: 1rem; /* Adjusted */
+            border-radius: 0.375rem; border: 1px solid rgba(107, 114, 128, 0.2);
+            background-color: rgba(31, 41, 55, 0.5); color: #E5E7EB;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Added ease */
+            font-weight: 400; font-size: 0.9rem; /* Adjusted */
         }
         .modal-content select:focus, .modal-content input[type="text"]:focus, .modal-content textarea:focus {
-            outline: none;
-            border-color: #818CF8; 
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+            outline: none; border-color: #60A5FA; /* Tailwind blue-400 */
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3); /* Tailwind blue-400 with alpha */
         }
         .modal-content button[type="submit"] {
-            background-image: linear-gradient(to right, #3B82F6, #6366F1);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
+            background-color: rgba(56, 189, 248, 0.3); /* Tailwind sky-400 with alpha */
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            color: white; padding: 0.6rem 1.25rem; /* Adjusted */
+            border: none; border-radius: 0.375rem;
+            cursor: pointer; transition: all 0.3s ease; font-weight: 600; /* Josefin Sans semibold */
+            font-size: 0.95rem; /* Adjusted */
         }
         .modal-content button[type="submit"]:hover {
-            background-image: linear-gradient(to right, #2563EB, #4F46E5);
+            background-color: rgba(56, 189, 248, 0.4); 
+            border-color: rgba(56, 189, 248, 0.8);
             transform: translateY(-1px);
         }
         .close-btn {
-            color: #9CA3AF; 
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            transition: color 0.3s;
+            color: #9CA3AF; float: right; font-size: 2rem; /* Increased size */
+            font-weight: 300; /* Lighter weight for a softer look */
+            transition: color 0.3s ease, transform 0.3s ease; /* Added transform transition */
+            line-height: 1; /* Ensure it doesn't affect layout */
         }
-        .close-btn:hover,
-        .close-btn:focus {
-            color: #E0E7FF; 
-            text-decoration: none;
-            cursor: pointer;
-        }
+        .close-btn:hover, .close-btn:focus { color: #E5E7EB; text-decoration: none; cursor: pointer; transform: rotate(90deg); }
+        
         #recommendation-output {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background-color: rgba(40, 40, 60, 0.5);
-            border-radius: 0.375rem;
-            border: 1px solid rgba(129, 140, 248, 0.2);
-            color: #E0E7FF;
+            margin-top: 1.5rem; padding: 1rem;
+            background-color: rgba(31, 41, 55, 0.25); 
+            border-radius: 0.375rem; border: 1px solid rgba(107, 114, 128, 0.08);
+            color: #E5E7EB;
+            font-size: 0.95rem; /* Consistent font size */
         }
-        #recommendation-output h3 { color: #A5B4FC; margin-bottom: 0.75rem; font-size: 1.25rem; }
-        #recommendation-output p { margin-bottom: 0.75rem; line-height: 1.7; }
+        #recommendation-output h3 { color: #CBD5E1; margin-bottom: 0.75rem; font-size: 1.15rem; font-weight: 600;} 
+        #recommendation-output p { margin-bottom: 0.75rem; line-height: 1.7; font-weight: 400;} 
         #recommendation-output ul { list-style-position: inside; margin-left: 0.5rem; margin-bottom: 0.75rem; }
-        #recommendation-output li { margin-bottom: 0.5rem; line-height: 1.7; }
-        #aiRoutineResult .prose h5 { margin-top: 1.25rem; margin-bottom: 0.75rem; font-size: 1.25em; }
-        #aiRoutineResult .prose p, #aiRoutineResult .prose li { line-height: 1.75; margin-bottom: 0.75rem; }
-        #aiRoutineResult .prose ul { margin-top: 0.5rem; margin-bottom: 1rem; }
-
+        #recommendation-output li { margin-bottom: 0.5rem; line-height: 1.7; font-weight: 400;} 
+        
+         #aiRoutineResult h4 { color: #E5E7EB; font-weight: 600; font-size: 1.25rem; } /* Adjusted */
+         #aiRoutineResult h5 { color: #D1D5DB; font-weight: 500; font-size: 1.1rem; } /* Adjusted */
+         #aiRoutineResult p, #aiRoutineResult li { color: #D1D5DB; font-weight: 400; font-size: 1rem; } /* Adjusted */
+         #aiRoutineResult strong { color: #E5E7EB; font-weight: 600; } 
 
     </style>
 </head>
@@ -397,7 +435,9 @@
     
     <nav> 
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-full">
-            <div class="brand-in-nav initial-load-brand">CYNORA®</div>
+            <div class="brand-in-nav initial-load-brand helvetica-neue-cynora">
+                <span class="font-light">C</span><span class="font-medium">Y</span><span class="font-semibold">N</span><span class="font-bold">ORA</span><sup class="reg-symbol">&reg;</sup>
+            </div>
             
             <div id="desktop-nav-links" class="hidden md:flex items-center space-x-1 initial-load-nav">
                 <a href="#home" class="nav-button active" data-target="home" style="animation-delay: 0.2s;">Home</a>
@@ -411,7 +451,7 @@
             <a href="#" class="cta-button initial-load-cta hidden sm:inline-block" id="get-started-btn" style="animation-delay: 0.2s;">Get Started</a>
 
             <div class="md:hidden flex items-center">
-                <button id="burger-menu-button" aria-label="Open menu" class="text-indigo-300 hover:text-white focus:outline-none p-2">
+                <button id="burger-menu-button" aria-label="Open menu" class="text-gray-300 hover:text-white focus:outline-none p-2 rounded-md transition-colors duration-200 hover:bg-gray-700/50">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                     </svg>
@@ -437,155 +477,140 @@
             <p class="initial-load-brand" style="animation-delay: 0.6s;">An exploration of dermatological science behind skin color and its management.</p>
         </section>
 
-        <div class="container mx-auto p-4 sm:p-8">
-            <section id="understanding" class="content-section">
-                <h2 class="text-3xl font-semibold mb-8">Understanding Pigmentation</h2>
-                <p class="mb-8 text-lg leading-relaxed">Skin pigmentation is determined by melanin, a pigment produced by specialized cells called melanocytes. This section explores the skin's structure, how melanin is made, and common conditions that lead to changes in skin color. Gaining clarity on these foundational topics is crucial for appreciating how different treatments work to address pigmentation concerns.</p>
-                <div class="mb-10">
-                    <h3 class="text-2xl font-semibold mb-4">A. Fundamental Skin Anatomy & Physiology</h3>
-                    <p class="mb-3 text-lg">The skin, our largest organ, has three main layers: the epidermis, dermis, and hypodermis. Pigmentation primarily involves the epidermis and dermis.</p>
-                    <div class="skin-layer-diagram my-6 p-5 bg-gray-800/20 rounded-lg border border-indigo-500/30">
-                        <div class="epidermis"><b>Epidermis</b> (Outermost layer)</div>
-                        <div class="dermis"><b>Dermis</b> (Middle layer)</div>
-                        <div class="hypodermis"><b>Hypodermis</b> (Innermost layer)</div>
-                    </div>
-                    <p class="mb-3 text-lg">The <strong>Epidermal Melanin Unit</strong> consists of one melanocyte supplying melanin to about 30-40 keratinocytes. This ensures even pigment distribution. Melanocytes are located in the basal layer of the epidermis.</p>
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8"> <section id="understanding" class="content-section">
+                <h2 class="mb-6">Understanding Pigmentation</h2> <p class="mb-6 text-lg leading-relaxed">Skin pigmentation is determined by melanin, a pigment produced by specialized cells called melanocytes. This section explores the skin's structure, how melanin is made, and common conditions that lead to changes in skin color. Gaining clarity on these foundational topics is crucial for appreciating how different treatments work to address pigmentation concerns.</p>
+                
+                <h3 class="mb-3">A. Fundamental Skin Anatomy & Physiology</h3>
+                <p class="mb-3">The skin, our largest organ, has three main layers: the epidermis, dermis, and hypodermis. Pigmentation primarily involves the epidermis and dermis.</p>
+                <div class="skin-layer-diagram my-5"> 
+                    <div class="epidermis"><b>Epidermis</b> (Outermost layer)</div>
+                    <div class="dermis"><b>Dermis</b> (Middle layer)</div>
+                    <div class="hypodermis"><b>Hypodermis</b> (Innermost layer)</div>
                 </div>
-                <div class="mb-10">
-                    <h3 class="text-2xl font-semibold mb-4">B. The Process of Melanogenesis (Melanin Production)</h3>
-                    <p class="mb-3 text-lg">Melanogenesis is the complex process of producing melanin within melanosomes (organelles inside melanocytes).</p>
-                    <ol class="list-decimal list-inside space-y-3 text-lg">
-                        <li><strong>Origin:</strong> Melanocytes originate from neural crest cells and migrate to the epidermis.</li>
-                        <li><strong>Melanosome Maturation:</strong> Melanin is synthesized in stages (I-IV) within melanosomes.</li>
-                        <li><strong>Enzymatic Cascade:</strong>
-                            <ul class="list-disc list-inside ml-6 space-y-1">
-                                <li>L-Tyrosine is converted to L-DOPA by the enzyme <strong>Tyrosinase</strong> (rate-limiting step).</li>
-                                <li>Tyrosinase further oxidizes L-DOPA to Dopaquinone.</li>
-                                <li>Dopaquinone leads to <strong>Eumelanin</strong> (brown/black) or, with cysteine, <strong>Pheomelanin</strong> (red/yellow).</li>
-                            </ul>
-                        </li>
-                        <li><strong>Key Enzymes:</strong> Tyrosinase (TYR), Tyrosinase-Related Protein 1 (TYRP1), Dopachrome Tautomerase (DCT).</li>
-                        <li><strong>Melanosome Transfer:</strong> Mature melanosomes are transferred from melanocytes to keratinocytes.</li>
-                    </ol>
-                    <p class="mt-4 mb-3 text-lg"><strong>Regulation:</strong> Melanogenesis is regulated by genetics, hormones, UV radiation (most potent stimulator), and inflammation.</p>
-                    <p class="italic text-lg">UV radiation triggers DNA damage, p53 activation, release of signaling molecules, and enzyme activation, all increasing melanin production.</p>
+                <p class="mb-3">The <strong>Epidermal Melanin Unit</strong> consists of one melanocyte supplying melanin to about 30-40 keratinocytes. This ensures even pigment distribution. Melanocytes are located in the basal layer of the epidermis.</p>
+                
+                <h3 class="mb-3 mt-8">B. The Process of Melanogenesis (Melanin Production)</h3>
+                <p class="mb-3">Melanogenesis is the complex process of producing melanin within melanosomes (organelles inside melanocytes).</p>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li><strong>Origin:</strong> Melanocytes originate from neural crest cells and migrate to the epidermis.</li>
+                    <li><strong>Melanosome Maturation:</strong> Melanin is synthesized in stages (I-IV) within melanosomes.</li>
+                    <li><strong>Enzymatic Cascade:</strong>
+                        <ul class="list-disc list-inside ml-5 space-y-1">
+                            <li>L-Tyrosine is converted to L-DOPA by the enzyme <strong>Tyrosinase</strong> (rate-limiting step).</li>
+                            <li>Tyrosinase further oxidizes L-DOPA to Dopaquinone.</li>
+                            <li>Dopaquinone leads to <strong>Eumelanin</strong> (brown/black) or, with cysteine, <strong>Pheomelanin</strong> (red/yellow).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Key Enzymes:</strong> Tyrosinase (TYR), Tyrosinase-Related Protein 1 (TYRP1), Dopachrome Tautomerase (DCT).</li>
+                    <li><strong>Melanosome Transfer:</strong> Mature melanosomes are transferred from melanocytes to keratinocytes.</li>
+                </ol>
+                <p class="mt-3 mb-3"><strong>Regulation:</strong> Melanogenesis is regulated by genetics, hormones, UV radiation (most potent stimulator), and inflammation.</p>
+                <p class="italic">UV radiation triggers DNA damage, p53 activation, release of signaling molecules, and enzyme activation, all increasing melanin production.</p>
+                
+                <h3 class="mb-5 mt-8">C. Common Types of Persistent Skin Pigmentation</h3>
+                 <div class="flex flex-wrap border-b border-gray-700/30 mb-4"> 
+                    <button class="tab-button active" onclick="openDisorderTab(event, 'melasma')">Melasma</button>
+                    <button class="tab-button" onclick="openDisorderTab(event, 'pih')">Post-Inflammatory Hyperpigmentation (PIH)</button>
+                    <button class="tab-button" onclick="openDisorderTab(event, 'lentigines')">Solar Lentigines</button>
                 </div>
-                <div>
-                    <h3 class="text-2xl font-semibold mb-6">C. Common Types of Persistent Skin Pigmentation</h3>
-                     <div class="flex flex-wrap border-b border-indigo-500/30 mb-2">
-                        <button class="tab-button active" onclick="openDisorderTab(event, 'melasma')">Melasma</button>
-                        <button class="tab-button" onclick="openDisorderTab(event, 'pih')">Post-Inflammatory Hyperpigmentation (PIH)</button>
-                        <button class="tab-button" onclick="openDisorderTab(event, 'lentigines')">Solar Lentigines</button>
-                    </div>
-                    <div id="melasma" class="tab-content active">
-                        <h4 class="text-xl font-semibold mb-3">Melasma</h4>
-                        <p class="mb-2 text-lg"><strong>Presentation:</strong> Symmetrical, irregular brown/gray-brown patches on sun-exposed areas.</p>
-                        <p class="mb-2 text-lg"><strong>Pathophysiology:</strong> Multifactorial. Key factors include UV Radiation, Hormonal Factors, Genetic Predisposition, and Dermal Factors.</p>
-                        <p class="text-lg"><strong>Types:</strong> Epidermal, Dermal, Mixed.</p>
-                    </div>
-                    <div id="pih" class="tab-content">
-                        <h4 class="text-xl font-semibold mb-3">Post-Inflammatory Hyperpigmentation (PIH)</h4>
-                        <p class="mb-2 text-lg"><strong>Presentation:</strong> Light brown to blue-gray macules/patches after skin inflammation or injury.</p>
-                        <p class="mb-2 text-lg"><strong>Etiology:</strong> Acne, eczema, psoriasis, trauma, dermatological procedures.</p>
-                        <p class="mb-2 text-lg"><strong>Pathogenesis:</strong> Inflammatory mediators stimulate melanocytes. Dermal PIH is more persistent.</p>
-                        <p class="text-lg"><strong>Risk Factors:</strong> More common in darker skin types. Intensity of initial inflammation matters.</p>
-                    </div>
-                    <div id="lentigines" class="tab-content">
-                        <h4 class="text-xl font-semibold mb-3">Solar Lentigines (Sun Spots)</h4>
-                        <p class="mb-2 text-lg"><strong>Presentation:</strong> Benign, discrete tan to dark brown macules on chronically sun-exposed skin.</p>
-                        <p class="mb-2 text-lg"><strong>Pathogenesis:</strong> Chronic UV exposure leads to localized melanocyte proliferation and melanin accumulation.</p>
-                        <p class="text-lg"><strong>Risk Factors:</strong> Age, fair skin, cumulative sun exposure.</p>
-                    </div>
+                <div id="melasma" class="tab-content active">
+                    <h4 class="mb-2">Melasma</h4>
+                    <p class="mb-2"><strong>Presentation:</strong> Symmetrical, irregular brown/gray-brown patches on sun-exposed areas.</p>
+                    <p class="mb-2"><strong>Pathophysiology:</strong> Multifactorial. Key factors include UV Radiation, Hormonal Factors, Genetic Predisposition, and Dermal Factors.</p>
+                    <p><strong>Types:</strong> Epidermal, Dermal, Mixed.</p>
+                </div>
+                <div id="pih" class="tab-content">
+                    <h4 class="mb-2">Post-Inflammatory Hyperpigmentation (PIH)</h4>
+                    <p class="mb-2"><strong>Presentation:</strong> Light brown to blue-gray macules/patches after skin inflammation or injury.</p>
+                    <p class="mb-2"><strong>Etiology:</strong> Acne, eczema, psoriasis, trauma, dermatological procedures.</p>
+                    <p class="mb-2"><strong>Pathogenesis:</strong> Inflammatory mediators stimulate melanocytes. Dermal PIH is more persistent.</p>
+                    <p><strong>Risk Factors:</strong> More common in darker skin types. Intensity of initial inflammation matters.</p>
+                </div>
+                <div id="lentigines" class="tab-content">
+                    <h4 class="mb-2">Solar Lentigines (Sun Spots)</h4>
+                    <p class="mb-2"><strong>Presentation:</strong> Benign, discrete tan to dark brown macules on chronically sun-exposed skin.</p>
+                    <p class="mb-2"><strong>Pathogenesis:</strong> Chronic UV exposure leads to localized melanocyte proliferation and melanin accumulation.</p>
+                    <p><strong>Risk Factors:</strong> Age, fair skin, cumulative sun exposure.</p>
                 </div>
             </section>
 
             <section id="ingredients" class="content-section">
-                <h2 class="text-3xl font-semibold mb-8">Active Ingredients for Hyperpigmentation</h2>
-                <p class="mb-8 text-lg leading-relaxed">A variety of active ingredients are scientifically recognized for their ability to treat persistent skin pigmentation. They work through different mechanisms, such as inhibiting the pigment-producing enzyme tyrosinase, accelerating skin cell turnover, or preventing pigment transfer. This section allows you to explore these key ingredients in detail. Click on an ingredient name to learn more about its specific actions, chemical properties, efficacy from studies, and clinical profile.</p>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-10" id="ingredientButtons">
+                <h2 class="mb-6">Active Ingredients for Hyperpigmentation</h2>
+                <p class="mb-6 text-lg leading-relaxed">A variety of active ingredients are scientifically recognized for their ability to treat persistent skin pigmentation. They work through different mechanisms, such as inhibiting the pigment-producing enzyme tyrosinase, accelerating skin cell turnover, or preventing pigment transfer. This section allows you to explore these key ingredients in detail. Click on an ingredient name to learn more about its specific actions, chemical properties, efficacy from studies, and clinical profile.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 mb-8" id="ingredientButtons"> </div>
+                <div id="ingredientDetail" class="min-h-[200px]"> 
+                    <p class="text-gray-400 italic">Select an ingredient from the list above to view its details.</p>
                 </div>
-                <div id="ingredientDetail" class="mt-8 p-6 border border-indigo-500/30 rounded-lg bg-gray-800/30 min-h-[300px]">
-                    <p class="text-gray-400 italic text-lg">Select an ingredient from the list above to view its details.</p>
+                
+                <h3 class="mb-3 mt-8">Tyrosinase Inhibitor Potency Comparison</h3>
+                <p class="mb-5 text-lg leading-relaxed">Some ingredients are particularly effective at inhibiting tyrosinase, the key enzyme in melanin production. The chart below compares the approximate half-maximal inhibitory concentration ($IC_{50}$) of selected agents against human tyrosinase. A lower $IC_{50}$ value indicates greater potency.</p>
+                <div class="chart-container"> 
+                    <canvas id="potencyChart"></canvas>
                 </div>
-                <div class="mt-10">
-                    <h3 class="text-2xl font-semibold mb-4">Tyrosinase Inhibitor Potency Comparison</h3>
-                    <p class="mb-6 text-lg leading-relaxed">Some ingredients are particularly effective at inhibiting tyrosinase, the key enzyme in melanin production. The chart below compares the approximate half-maximal inhibitory concentration ($IC_{50}$) of selected agents against human tyrosinase. A lower $IC_{50}$ value indicates greater potency.</p>
-                    <div class="chart-container bg-slate-800/50">
-                        <canvas id="potencyChart"></canvas>
-                    </div>
-                     <p class="text-base text-gray-400 mt-3 text-center">Data based on reported $IC_{50}$ values: Thiamidol ~1.1 µmol/L, Hydroquinone >4000 µmol/L, Kojic Acid >500 µmol/L for human tyrosinase. This illustrates Thiamidol's high specific potency.</p>
-                </div>
+                 <p class="text-sm text-gray-400 mt-3 text-center">Data based on reported $IC_{50}$ values: Thiamidol ~1.1 µmol/L, Hydroquinone >4000 µmol/L, Kojic Acid >500 µmol/L for human tyrosinase. This illustrates Thiamidol's high specific potency.</p>
             </section>
 
             <section id="combinations" class="content-section">
-                <h2 class="text-3xl font-semibold mb-8">Ingredient Combinations & Skin Type Considerations</h2>
-                <p class="mb-8 text-lg leading-relaxed">Treating hyperpigmentation often involves a multi-faceted approach. Combining active ingredients with different mechanisms of action can enhance efficacy. However, it's also crucial to consider how these ingredients and combinations interact with various skin types and tones, as sensitivity and response can vary significantly. This section provides an overview of these important aspects.</p>
-                <div class="mb-10 p-6 bg-gray-800/30 rounded-lg border border-indigo-500/30">
-                    <h3 class="text-2xl font-semibold mb-4">Synergistic Effects of Combining Ingredients</h3>
-                    <p class="mb-3 text-lg">Combining ingredients that target different steps in the pigmentation pathway can lead to better and faster results.</p>
-                    <p class="mb-3 text-lg"><strong>Pros of Combinations:</strong></p>
-                    <ul class="list-disc list-inside ml-4 mb-3 space-y-2 text-lg">
-                        <li><strong>Enhanced Efficacy:</strong> Targeting multiple pathways can be more effective.</li>
-                        <li><strong>Reduced Concentrations:</strong> May allow lower doses, reducing side effects.</li>
-                        <li><strong>Addressing Multiple Factors:</strong> Useful for complex conditions like melasma.</li>
-                    </ul>
-                    <p class="mb-3 text-lg"><strong>Common Effective Combinations (Examples):</strong></p>
-                    <ul class="list-disc list-inside ml-4 mb-3 space-y-2 text-lg">
-                        <li><strong>Kligman's Formula:</strong> Hydroquinone + Retinoid + Mild Corticosteroid.</li>
-                        <li><strong>Retinoids + Tyrosinase Inhibitors:</strong> e.g., Retinoid + Azelaic Acid.</li>
-                        <li><strong>Niacinamide + Various Actives:</strong> Good partner due to barrier support.</li>
-                    </ul>
-                     <p class="mb-2 text-lg"><strong>Cons of Combinations:</strong></p>
-                    <ul class="list-disc list-inside ml-4 text-lg">
-                        <li><strong>Increased Irritation Potential:</strong> Requires careful introduction.</li>
-                    </ul>
-                </div>
-                <div class="grid md:grid-cols-2 gap-8 mb-10">
-                    <div class="p-6 bg-gray-800/30 rounded-lg border border-indigo-500/30">
-                        <h3 class="text-2xl font-semibold mb-4">Facial vs. Body Application</h3>
-                        <ul class="list-disc list-inside ml-4 space-y-2 text-lg">
-                            <li><strong>Skin Thickness:</strong> Body skin is thicker.</li>
-                            <li><strong>Sensitivity:</strong> Facial skin often more sensitive.</li>
-                            <li><strong>Area Size:</strong> Systemic absorption concern for large body areas.</li>
-                        </ul>
-                    </div>
-                    <div class="p-6 bg-gray-800/30 rounded-lg border border-indigo-500/30">
-                        <h3 class="text-2xl font-semibold mb-4">Skin Type & Tone Considerations</h3>
-                         <ul class="list-disc list-inside ml-4 space-y-2 text-lg">
-                            <li><strong>Sensitive/Dry Skin:</strong> Gentle actives preferred.</li>
-                            <li><strong>Oily/Acne-Prone Skin:</strong> Benefits from Salicylic Acid, Retinoids.</li>
-                            <li><strong>Darker Skin Tones:</strong> Higher PIH risk. Caution with aggressive treatments.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-semibold mb-4">Ingredient Categorization Overview</h3>
-                    <p class="mb-6 text-lg leading-relaxed">This table provides a general categorization of key ingredients. Individual results can vary.</p>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Ingredient</th>
-                                    <th>General Speed of Noticeable Results</th>
-                                    <th>Reliability (Evidence Strength)</th>
-                                    <th>Factors Contributing to 'Premiumness'</th>
-                                </tr>
-                            </thead>
-                            <tbody id="categorizationTableBody">
-                            </tbody>
-                        </table>
-                    </div>
+                <h2 class="mb-6">Ingredient Combinations & Skin Type Considerations</h2>
+                <p class="mb-6 text-lg leading-relaxed">Treating hyperpigmentation often involves a multi-faceted approach. Combining active ingredients with different mechanisms of action can enhance efficacy. However, it's also crucial to consider how these ingredients and combinations interact with various skin types and tones, as sensitivity and response can vary significantly. This section provides an overview of these important aspects.</p>
+                
+                <h3 class="mb-3">Synergistic Effects of Combining Ingredients</h3>
+                <p class="mb-3">Combining ingredients that target different steps in the pigmentation pathway can lead to better and faster results.</p>
+                <p class="mb-3"><strong>Pros of Combinations:</strong></p>
+                <ul class="list-disc list-inside ml-4 mb-3 space-y-1.5">
+                    <li><strong>Enhanced Efficacy:</strong> Targeting multiple pathways can be more effective.</li>
+                    <li><strong>Reduced Concentrations:</strong> May allow lower doses, reducing side effects.</li>
+                    <li><strong>Addressing Multiple Factors:</strong> Useful for complex conditions like melasma.</li>
+                </ul>
+                <p class="mb-3"><strong>Common Effective Combinations (Examples):</strong></p>
+                <ul class="list-disc list-inside ml-4 mb-3 space-y-1.5">
+                    <li><strong>Kligman's Formula:</strong> Hydroquinone + Retinoid + Mild Corticosteroid.</li>
+                    <li><strong>Retinoids + Tyrosinase Inhibitors:</strong> e.g., Retinoid + Azelaic Acid.</li>
+                    <li><strong>Niacinamide + Various Actives:</strong> Good partner due to barrier support.</li>
+                </ul>
+                 <p class="mb-2"><strong>Cons of Combinations:</strong></p>
+                <ul class="list-disc list-inside ml-4 mb-8">
+                    <li><strong>Increased Irritation Potential:</strong> Requires careful introduction.</li>
+                </ul>
+                
+                <h3 class="mb-3">Facial vs. Body Application</h3>
+                <ul class="list-disc list-inside ml-4 space-y-1.5 mb-8">
+                    <li><strong>Skin Thickness:</strong> Body skin is thicker.</li>
+                    <li><strong>Sensitivity:</strong> Facial skin often more sensitive.</li>
+                    <li><strong>Area Size:</strong> Systemic absorption concern for large body areas.</li>
+                </ul>
+            
+                <h3 class="mb-3">Skin Type & Tone Considerations</h3>
+                 <ul class="list-disc list-inside ml-4 space-y-1.5 mb-8">
+                    <li><strong>Sensitive/Dry Skin:</strong> Gentle actives preferred.</li>
+                    <li><strong>Oily/Acne-Prone Skin:</strong> Benefits from Salicylic Acid, Retinoids.</li>
+                    <li><strong>Darker Skin Tones:</strong> Higher PIH risk. Caution with aggressive treatments.</li>
+                </ul>
+                
+                <h3 class="mb-3 mt-8">Ingredient Categorization Overview</h3>
+                <p class="mb-5 text-lg leading-relaxed">This table provides a general categorization of key ingredients. Individual results can vary.</p>
+                <div class="overflow-x-auto rounded-lg border border-gray-700/30"> <table>
+                        <thead>
+                            <tr>
+                                <th>Ingredient</th>
+                                <th>General Speed of Noticeable Results</th>
+                                <th>Reliability (Evidence Strength)</th>
+                                <th>Factors Contributing to 'Premiumness'</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categorizationTableBody">
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
             <section id="aiHelper" class="content-section">
-                <h2 class="text-3xl font-semibold mb-6">✨ AI Skincare Helper</h2>
-                <p class="mb-8 text-lg leading-relaxed">Get a personalized skincare routine suggestion from our AI! Please provide some information about your skin and concerns. This tool provides general suggestions and is not a substitute for professional dermatological advice.</p>
+                <h2 class="mb-5">✨ AI Skincare Helper</h2>
+                <p class="mb-6 text-lg leading-relaxed">Get a personalized skincare routine suggestion from our AI! Please provide some information about your skin and concerns. This tool provides general suggestions and is not a substitute for professional dermatological advice.</p>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div>
-                        <label for="aiSkinType" class="block text-base font-medium mb-2 text-indigo-300">Your Skin Type:</label>
-                        <select id="aiSkinType" class="mt-1 block w-full py-2.5 px-3.5 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base bg-slate-700/50 border-indigo-500/40 text-indigo-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"> <div>
+                        <label for="aiSkinType" class="block text-sm font-medium mb-1.5">Your Skin Type:</label>
+                        <select id="aiSkinType" class="mt-1 block w-full py-2 px-3 border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-gray-700/50 border-gray-600/30 text-gray-200">
                             <option>Normal</option>
                             <option>Oily</option>
                             <option>Dry</option>
@@ -594,8 +619,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="aiConcern" class="block text-base font-medium mb-2 text-indigo-300">Primary Pigmentation Concern:</label>
-                        <select id="aiConcern" class="mt-1 block w-full py-2.5 px-3.5 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base bg-slate-700/50 border-indigo-500/40 text-indigo-100">
+                        <label for="aiConcern" class="block text-sm font-medium mb-1.5">Primary Pigmentation Concern:</label>
+                        <select id="aiConcern" class="mt-1 block w-full py-2 px-3 border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-gray-700/50 border-gray-600/30 text-gray-200">
                             <option>General Hyperpigmentation</option>
                             <option>Melasma</option>
                             <option>Post-Inflammatory Hyperpigmentation (PIH)</option>
@@ -604,27 +629,25 @@
                         </select>
                     </div>
                 </div>
-                <div class="mb-8">
-                    <label for="aiAvoidIngredients" class="block text-base font-medium mb-2 text-indigo-300">Ingredients to avoid or currently using (optional, comma-separated):</label>
-                    <input type="text" id="aiAvoidIngredients" class="mt-1 block w-full py-2.5 px-3.5 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base bg-slate-700/50 border-indigo-500/40 text-indigo-100 placeholder-indigo-400/70" placeholder="e.g., Retinol, Vitamin C">
+                <div class="mb-6">
+                    <label for="aiAvoidIngredients" class="block text-sm font-medium mb-1.5">Ingredients to avoid or currently using (optional, comma-separated):</label>
+                    <input type="text" id="aiAvoidIngredients" class="mt-1 block w-full py-2 px-3 border rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-gray-700/50 border-gray-600/30 text-gray-200 placeholder-gray-500/70" placeholder="e.g., Retinol, Vitamin C">
                 </div>
-                <button id="getAIRoutineBtn" class="inline-flex items-center transition-all duration-300 text-base bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-2.5 px-6 rounded-md shadow-lg hover:shadow-xl transform hover:scale-105">
+                <button id="getAIRoutineBtn" class="inline-flex items-center">
                     <span class="mr-2">Get AI Routine Suggestion</span>
                     <svg id="aiLoadingSpinner" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                 </button>
-                <div id="aiRoutineResult" class="mt-10 p-8 border border-indigo-500/30 rounded-lg bg-slate-800/40 min-h-[200px] shadow-sm">
-                    <p class="text-indigo-300 italic text-lg">Your personalized routine suggestion will appear here.</p>
+                <div id="aiRoutineResult" class="mt-8 min-h-[100px] hidden"> 
                 </div>
             </section>
 
             <section id="glossary" class="content-section">
-                <h2 class="text-3xl font-semibold mb-8">Glossary of Dermatological Terms</h2>
-                <p class="mb-8 text-lg leading-relaxed">Understanding the terminology used in dermatology is essential for grasping the nuances of skin pigmentation and its treatments. This glossary defines key terms relevant to the topics discussed in this guide. Accurate use of these terms helps in precise diagnosis, treatment selection, and communication.</p>
-                <div id="glossaryContent" class="space-y-5 text-lg">
-                </div>
+                <h2 class="mb-6">Glossary of Dermatological Terms</h2>
+                <p class="mb-6 text-lg leading-relaxed">Understanding the terminology used in dermatology is essential for grasping the nuances of skin pigmentation and its treatments. This glossary defines key terms relevant to the topics discussed in this guide. Accurate use of these terms helps in precise diagnosis, treatment selection, and communication.</p>
+                <div id="glossaryContent" class="space-y-4"> </div>
             </section>
         </div>
     </main>
@@ -633,8 +656,7 @@
       <div class="modal-content">
         <span id="close-modal" class="close-btn">&times;</span>
         <h2>Find Your Perfect Skin Treatment</h2>
-        <form id="skin-consultation-form" class="space-y-4">
-          <div>
+        <form id="skin-consultation-form" class="space-y-3.5"> <div>
             <label for="hyperpigmentation-type">Select Your Type of Hyperpigmentation:</label>
             <select id="hyperpigmentation-type" name="hyperpigmentation-type" class="w-full">
               <option value="melasma">Melasma</option>
@@ -710,11 +732,11 @@
     </div>
 
 
-    <footer class="text-center py-10 mt-12 border-t border-indigo-500/20 bg-slate-900/50 backdrop-blur-sm">
-        <p class="text-base text-indigo-300">&copy; 2024 Interactive Guide to Skin Pigmentation. Information based on dermatological review. AI suggestions are for informational purposes only and not medical advice.</p>
+    <footer class="text-center py-8 mt-10"> <p>&copy; 2025 Skin Pigmentation Guide: Dermatology-based, AI suggestions are informational, not medical advice.</p>
     </footer>
 
 <script>
+    // Ingredient and Glossary data remains the same as previous version
     const ingredientData = {
         "Hydroquinone": {
             mechanism: [
@@ -960,7 +982,7 @@
             clinical: {
                 indications: "Acne, comedones, oily skin, PIH (especially acne-related), superficial pigmentation. Used in OTC products (0.5-2%) and peels (up to 30%+).",
                 side_effects: "Dryness, peeling, irritation, redness. Generally well-tolerated at OTC levels. Salicylism is rare with topical use.",
-                contraindications: "Aspirin allergy (as SA is related). Caution in pregnancy (systemic absorption concern with high doses/large areas, though low risk with typical topical use).",
+                contraindications: "Aspirin allergy (as SA is related). Caution in pregnancy (systemic absorption concern with high doses/large areas, though low risk with topical use).",
                 safety: "Effective for targeted concerns. Sun protection recommended."
             },
             speed: "Weeks for acne improvement and surface exfoliation.",
@@ -1059,10 +1081,10 @@
         "Tyrosinase": "The key, rate-limiting enzyme in the melanin synthesis pathway."
     };
 
+    let potencyChartInstance = null;
+
     document.addEventListener('DOMContentLoaded', function() {
         const navElement = document.querySelector('nav');
-        const mainElement = document.querySelector('main');
-        const navLinks = document.querySelectorAll('nav a.nav-button'); 
         const contentSections = document.querySelectorAll('.content-section');
         const ingredientButtonsContainer = document.getElementById('ingredientButtons');
         const ingredientDetailContainer = document.getElementById('ingredientDetail');
@@ -1078,15 +1100,14 @@
 
         const burgerMenuButton = document.getElementById('burger-menu-button');
         const mobileMenuPanel = document.getElementById('mobile-menu-panel');
-        const desktopNavLinksContainer = document.getElementById('desktop-nav-links');
         
         const getStartedBtn = document.getElementById('get-started-btn');
         const getStartedBtnMobile = document.getElementById('get-started-btn-mobile');
         const consultationModal = document.getElementById('get-started-modal');
+        const consultationModalContent = consultationModal ? consultationModal.querySelector('.modal-content') : null;
         const closeModalBtn = document.getElementById('close-modal');
         const skinConsultationForm = document.getElementById('skin-consultation-form');
         const recommendationOutput = document.getElementById('recommendation-output');
-
 
         function setDynamicOffsets() {
             if (navElement) {
@@ -1099,27 +1120,98 @@
         setDynamicOffsets(); 
         window.addEventListener('resize', setDynamicOffsets); 
         window.addEventListener('scroll', function() { 
-             setDynamicOffsets();
+            setDynamicOffsets(); // Recalculate on scroll in case of dynamic changes
             let currentActive = 'home'; 
             const navHeight = navElement ? navElement.offsetHeight : 0;
+            const scrollPosition = window.pageYOffset;
 
             contentSections.forEach(section => {
-                const sectionTop = section.offsetTop - navHeight - 25; 
-                if (window.pageYOffset >= sectionTop) {
+                // Consider a section active if its top is within a certain range of the viewport top
+                // Or if a significant portion of it is visible
+                const sectionTop = section.offsetTop - navHeight - 50; // Adjusted offset for better accuracy
+                const sectionBottom = sectionTop + section.offsetHeight;
+                
+                // If the top of the section is above the scroll position and bottom is below, it's likely the current one
+                if (scrollPosition >= sectionTop && scrollPosition < sectionBottom - (section.offsetHeight * 0.3)) { // Active if top 70% is visible
                     currentActive = section.id;
                 }
             });
             
-            if (window.pageYOffset < (document.getElementById('understanding').offsetTop - navHeight - 50) && document.getElementById('understanding') ) { 
+            // Fallback for very top of the page
+            if (scrollPosition < (document.getElementById('understanding')?.offsetTop - navHeight - 100 || 200)) { 
                  currentActive = 'home';
             }
 
-
-             document.querySelectorAll('nav a.nav-button').forEach(link => {
+            document.querySelectorAll('nav a.nav-button').forEach(link => {
                 link.classList.toggle('active', link.dataset.target === currentActive);
             });
         });
 
+        function initializePotencyChart() {
+            if (potencyChartInstance) {
+                potencyChartInstance.destroy(); 
+            }
+            const potencyChartCanvas = document.getElementById('potencyChart');
+            if (potencyChartCanvas && potencyChartCanvas.offsetParent !== null) { 
+                const ctx = potencyChartCanvas.getContext('2d');
+                Chart.defaults.color = '#CBD5E1'; // slate-300
+                Chart.defaults.borderColor = 'rgba(107, 114, 128, 0.25)'; 
+                Chart.defaults.font.family = "'Josefin Sans', sans-serif"; // Use Josefin Sans for chart text
+
+                potencyChartInstance = new Chart(ctx, { 
+                    type: 'bar',
+                    data: {
+                        labels: ['Thiamidol', 'Kojic Acid', 'Hydroquinone'],
+                        datasets: [{
+                            label: 'IC50 (µmol/L) vs Human Tyrosinase (Lower is More Potent)',
+                            data: [1.1, 500, 4000],
+                            backgroundColor: ['rgba(110, 231, 183, 0.7)', 'rgba(107, 114, 128, 0.7)', 'rgba(75, 85, 99, 0.7)'], 
+                            borderColor: ['#6EE7B7', '#6B7280', '#4B5563'],
+                            borderWidth: 1,
+                            borderRadius: 4, // Rounded bars
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            y: { 
+                                beginAtZero: true, 
+                                type: 'logarithmic', 
+                                title: { display: true, text: 'IC50 (µmol/L) - Logarithmic Scale', color: '#E2E8F0', font: {size: 13}}, // slate-200
+                                grid: { color: 'rgba(107, 114, 128, 0.2)' },
+                                ticks: { color: '#CBD5E1', font: {size: 11} } // slate-300
+                            },
+                            x: { 
+                                title: { display: true, text: 'Ingredient', color: '#E2E8F0', font: {size: 13}},
+                                grid: { display: false }, 
+                                ticks: { color: '#CBD5E1', font: {size: 12} }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                backgroundColor: 'rgba(30, 41, 59, 0.9)', // slate-800
+                                titleColor: '#F1F5F9', // slate-100
+                                bodyColor: '#CBD5E1', // slate-300
+                                titleFont: { family: "'Outfit', sans-serif", weight: '600'},
+                                bodyFont: { family: "'Josefin Sans', sans-serif"},
+                                padding: 10,
+                                cornerRadius: 4,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) label += ': ';
+                                        if (context.parsed.y !== null) label += context.parsed.y + ' µmol/L';
+                                        if (context.label === 'Kojic Acid' || context.label === 'Hydroquinone') label += ' (approx. or > value)';
+                                        return label;
+                                    }
+                                }
+                            },
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        }
 
         function showSection(targetId, smooth = false) {
             document.querySelectorAll('nav a.nav-button').forEach(link => {
@@ -1129,6 +1221,10 @@
             contentSections.forEach(section => {
                 section.classList.toggle('active', section.id === targetId);
             });
+
+            if (targetId === 'ingredients') {
+                setTimeout(initializePotencyChart, 100); // Shorter delay
+            }
 
             if (!smooth && targetId === 'home') { 
                  window.scrollTo({top: 0, behavior: 'auto'});
@@ -1142,7 +1238,7 @@
             
             if (targetSection) {
                 const navHeight = navElement ? navElement.offsetHeight : 0;
-                let scrollTargetPosition = targetSection.offsetTop - navHeight - 20;
+                let scrollTargetPosition = targetSection.offsetTop - navHeight - 20; 
                 
                 if (targetId === 'home') { 
                     scrollTargetPosition = 0; 
@@ -1154,7 +1250,6 @@
                 });
                 
                 showSection(targetId, true); 
-
 
                 if (mobileMenuPanel && !mobileMenuPanel.classList.contains('hidden')) {
                     mobileMenuPanel.classList.add('hidden');
@@ -1169,24 +1264,40 @@
             link.addEventListener('click', handleNavLinkClick);
         });
 
-
         if (burgerMenuButton && mobileMenuPanel) {
             burgerMenuButton.addEventListener('click', function() {
                 mobileMenuPanel.classList.toggle('hidden');
             });
         }
 
-        // Modal Handling
-        if (getStartedBtn && consultationModal) {
+        function openModal(modalElement, modalContentElement) {
+            if (!modalElement || !modalContentElement) return;
+            modalElement.style.display = "block";
+            // Trigger reflow for transition
+            modalElement.offsetHeight; 
+            modalElement.classList.add('active');
+        }
+
+        function closeModal(modalElement) {
+            if (!modalElement) return;
+            modalElement.classList.remove('active');
+            // Wait for transition to finish before hiding
+            setTimeout(() => {
+                modalElement.style.display = "none";
+                if (recommendationOutput) recommendationOutput.innerHTML = ""; 
+            }, 300); // Match transition duration
+        }
+
+        if (getStartedBtn && consultationModal && consultationModalContent) {
             getStartedBtn.onclick = function(e) {
                 e.preventDefault();
-                consultationModal.style.display = "block";
+                openModal(consultationModal, consultationModalContent);
             }
         }
-        if (getStartedBtnMobile && consultationModal) {
+        if (getStartedBtnMobile && consultationModal && consultationModalContent) {
              getStartedBtnMobile.onclick = function(e) {
                 e.preventDefault();
-                consultationModal.style.display = "block";
+                openModal(consultationModal, consultationModalContent);
                 if (mobileMenuPanel && !mobileMenuPanel.classList.contains('hidden')) {
                     mobileMenuPanel.classList.add('hidden');
                 }
@@ -1194,19 +1305,17 @@
         }
         if (closeModalBtn && consultationModal) {
             closeModalBtn.onclick = function() {
-                consultationModal.style.display = "none";
-                recommendationOutput.innerHTML = ""; 
+                closeModal(consultationModal);
             }
         }
         if (consultationModal) {
             window.onclick = function(event) {
                 if (event.target == consultationModal) {
-                    consultationModal.style.display = "none";
-                    recommendationOutput.innerHTML = ""; 
+                    closeModal(consultationModal);
                 }
             }
         }
-
+        
         if (skinConsultationForm) {
             skinConsultationForm.onsubmit = function(event) {
                 event.preventDefault();
@@ -1218,16 +1327,16 @@
 
                 if (medicalHistory !== 'none') {
                     recommendationOutput.innerHTML = `
-                        <h3 class="text-xl font-semibold mb-3 text-indigo-300">Important Note:</h3>
-                        <p class="text-lg">Thank you for providing your information. Due to the complexities of medical history and medication interactions, we strongly recommend contacting us directly for a more personalized consultation or speaking with a dermatologist.</p>
-                        <p class="mt-3 text-lg">You can reach us on <a href="YOUR_FACEBOOK_LINK_HERE" target="_blank" class="text-blue-400 hover:underline">Facebook</a> or <a href="YOUR_INSTAGRAM_LINK_HERE" target="_blank" class="text-pink-400 hover:underline">Instagram</a>.</p>
+                        <h3 class="text-xl font-semibold mb-3">Important Note:</h3>
+                        <p>Thank you for providing your information. Due to the complexities of medical history and medication interactions, we strongly recommend contacting us directly for a more personalized consultation or speaking with a dermatologist.</p>
+                        <p class="mt-3">You can reach us on <a href="YOUR_FACEBOOK_LINK_HERE" target="_blank" class="text-sky-400 hover:underline">Facebook</a> or <a href="YOUR_INSTAGRAM_LINK_HERE" target="_blank" class="text-pink-400 hover:underline">Instagram</a>.</p>
                     `;
                 } else {
                     const recommendations = getIngredientRecommendations(hyperpigmentationType, skinType, sensitivity, currentRoutine, medicalHistory);
                     recommendationOutput.innerHTML = `
-                        <h3 class="text-xl font-semibold mb-3 text-indigo-300">Our Suggestion:</h3>
-                        <p class="text-lg">${recommendations}</p>
-                        <p class="text-sm mt-3 text-gray-400">Note: This is a general suggestion. For personalized advice, please consult a dermatologist.</p>
+                        <h3>Our Suggestion:</h3>
+                        <p>${recommendations}</p>
+                        <p class="text-xs mt-3 text-gray-500">Note: This is a general suggestion. For personalized advice, please consult a dermatologist.</p>
                     `;
                 }
             };
@@ -1244,16 +1353,13 @@
                 suggested.push("Niacinamide", "Vitamin C", "Azelaic Acid", "Licorice Extract");
             } else if (hyperpigmentationType === 'solar-lentigines') {
                  suggested.push("Vitamin C", "Retinoids", "AHAs (e.g., Glycolic Acid)");
-            } else { // General, Other, Unsure
+            } else { 
                 suggested.push("Niacinamide", "Vitamin C", "Licorice Extract", "Azelaic Acid (gentle option)");
             }
 
             if (sensitivity === 'eczema-prone' || sensitivity === 'rosacea-prone' || sensitivity === 'aha-bha-sensitive') {
                 suggested = suggested.filter(ing => !ing.includes("AHA") && !ing.includes("BHA") && !ing.toLowerCase().includes("retinoid"));
                 suggested.push("Bakuchiol (gentle retinoid alternative if needed and tolerated)");
-            }
-            if (sensitivity === 'fragrance-sensitive') {
-                // This implies a formulation consideration, not a specific active ingredient change
             }
             
             suggested = [...new Set(suggested)]; 
@@ -1265,15 +1371,14 @@
             }
         }
 
-
         Object.keys(ingredientData).forEach(name => {
             const button = document.createElement('button');
-            let buttonClasses = 'ingredient-button text-sm'; 
+            let buttonClasses = 'ingredient-button py-2 px-2.5 rounded-md text-center'; 
             
-            if (name === "Alpha Hydroxy Acids (AHAs)" || name === "Beta Hydroxy Acids (BHAs)") {
-                buttonClasses += ' whitespace-normal'; 
+            if (name.length > 15) { 
+                buttonClasses += ' whitespace-normal leading-tight text-xs sm:text-sm'; // Smaller text for long names
             } else {
-                buttonClasses += ' whitespace-nowrap'; 
+                buttonClasses += ' whitespace-nowrap text-sm'; 
             }
             
             button.className = buttonClasses;
@@ -1300,32 +1405,33 @@
         function displayIngredientDetails(name) {
             const data = ingredientData[name];
             if (!data || !ingredientDetailContainer) {
-                if (ingredientDetailContainer) ingredientDetailContainer.innerHTML = `<p class="text-gray-400 italic text-lg">Details not found for ${name}.</p>`;
+                if (ingredientDetailContainer) ingredientDetailContainer.innerHTML = `<p class="text-gray-400 italic">Details not found for ${name}.</p>`;
                 return;
             }
 
-            let html = `<h3 class="text-2xl font-semibold mb-4">${name}</h3>`;
+            let html = `<h3>${name}</h3>`;
             if (data.mechanism) {
-                html += `<h4 class="text-xl font-semibold mt-5 mb-2">Mechanism of Action:</h4><ul class="list-disc list-inside space-y-1 text-lg">`;
+                html += `<h4>Mechanism of Action:</h4><ul class="list-disc list-inside space-y-1">`;
                 data.mechanism.forEach(item => html += `<li>${item}</li>`);
                 html += `</ul>`;
             }
             if (data.chemical) {
-                html += `<h4 class="text-xl font-semibold mt-5 mb-2">Chemical Properties:</h4><ul class="list-disc list-inside space-y-1 text-lg">`;
+                html += `<h4>Chemical Properties:</h4><ul class="list-disc list-inside space-y-1">`;
                 data.chemical.forEach(item => html += `<li>${item}</li>`);
                 html += `</ul>`;
             }
             if (data.efficacy) {
-                html += `<h4 class="text-xl font-semibold mt-5 mb-2">Efficacy Summary:</h4><p class="text-lg leading-relaxed">${data.efficacy}</p>`;
+                html += `<h4>Efficacy Summary:</h4><p>${data.efficacy}</p>`;
             }
             if (data.clinical) {
-                html += `<h4 class="text-xl font-semibold mt-5 mb-2">Clinical Profile:</h4><div class="space-y-2 text-lg">`;
+                html += `<h4>Clinical Profile:</h4><div class="space-y-1.5">`; // Adjusted spacing
                 if(data.clinical.indications) html += `<p><strong>Indications:</strong> ${data.clinical.indications}</p>`;
                 if(data.clinical.side_effects) html += `<p><strong>Potential Side Effects:</strong> ${data.clinical.side_effects}</p>`;
                 if(data.clinical.contraindications) html += `<p><strong>Contraindications:</strong> ${data.clinical.contraindications}</p>`;
                 if(data.clinical.safety) html += `<p><strong>General Safety Considerations:</strong> ${data.clinical.safety}</p></div>`;
             }
             ingredientDetailContainer.innerHTML = html;
+            ingredientDetailContainer.classList.remove('hidden'); 
         }
 
         const sortedGlossaryKeys = Object.keys(glossaryData).sort();
@@ -1334,67 +1440,15 @@
             termDiv.innerHTML = `<p><strong class="glossary-term">${term}:</strong> ${glossaryData[term]}</p>`;
             if (glossaryContentContainer) glossaryContentContainer.appendChild(termDiv);
         });
-
-        const potencyChartCanvas = document.getElementById('potencyChart');
-        if (potencyChartCanvas) {
-            const ctx = potencyChartCanvas.getContext('2d');
-            Chart.defaults.color = '#A5B4FC'; 
-            Chart.defaults.borderColor = 'rgba(129, 140, 248, 0.25)'; 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Thiamidol', 'Kojic Acid', 'Hydroquinone'],
-                    datasets: [{
-                        label: 'IC50 (µmol/L) vs Human Tyrosinase (Lower is More Potent)',
-                        data: [1.1, 500, 4000],
-                        backgroundColor: ['rgba(129, 140, 248, 0.7)', 'rgba(99, 102, 241, 0.7)', 'rgba(79, 70, 229, 0.7)'], 
-                        borderColor: ['#818CF8', '#6366F1', '#4F46E5'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        y: { 
-                            beginAtZero: true, 
-                            type: 'logarithmic', 
-                            title: { display: true, text: 'IC50 (µmol/L) - Logarithmic Scale', color: '#C7D2FE'},
-                            grid: { color: 'rgba(129, 140, 248, 0.2)' },
-                            ticks: { color: '#A5B4FC' }
-                        },
-                        x: { 
-                            title: { display: true, text: 'Ingredient', color: '#C7D2FE'},
-                            grid: { display: false }, 
-                            ticks: { color: '#A5B4FC' }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            backgroundColor: 'rgba(17, 24, 39, 0.9)', 
-                            titleColor: '#E0E7FF', 
-                            bodyColor: '#C7D2FE', 
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) label += context.parsed.y + ' µmol/L';
-                                    if (context.label === 'Kojic Acid' || context.label === 'Hydroquinone') label += ' (approx. or greater than value shown)';
-                                    return label;
-                                }
-                            }
-                        },
-                        legend: { display: false }
-                    }
-                }
-            });
-        }
-         // Scroll-triggered fade-in animations for content sections
+        
         const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    // obs.unobserve(entry.target); // Optional: stop observing after first time
+                } else {
+                    // Optional: remove visible class if you want fade-out on scroll away
+                    // entry.target.classList.remove('visible');
                 }
             });
         }, observerOptions);
@@ -1403,17 +1457,20 @@
             observer.observe(section);
         });
         
-
-
         if (getAIRoutineBtn) {
             getAIRoutineBtn.addEventListener('click', async () => {
                 const skinType = aiSkinType.value;
                 const concern = aiConcern.value;
                 const avoid = aiAvoidIngredients.value.trim();
 
+                aiRoutineResult.innerHTML = ''; 
+                aiRoutineResult.classList.add('hidden'); 
+
                 aiLoadingSpinner.classList.remove('hidden');
                 getAIRoutineBtn.disabled = true;
-                aiRoutineResult.innerHTML = '<p class="text-indigo-300 italic text-lg">✨ Generating your personalized routine suggestion...</p>';
+                
+                aiRoutineResult.innerHTML = '<div class="p-4 md:p-6 text-gray-300 italic">✨ Generating your personalized routine suggestion...</div>';
+                aiRoutineResult.classList.remove('hidden');
 
                 let prompt = `You are an expert skincare formulation chemist and dermatologist. Based on the following user information, suggest a simple daily (morning and evening) skincare routine to help with their pigmentation concern.
 User Skin Type: ${skinType}
@@ -1426,31 +1483,34 @@ Primary Pigmentation Concern: ${concern}
 The routine should focus on addressing the pigmentation concern while being suitable for the user's skin type.
 Suggest general product types (e.g., "gentle cleanser", "hydrating serum with Niacinamide", "broad-spectrum SPF 50 sunscreen etc.") rather than specific brands.
 If possible, incorporate some of these known effective ingredients for pigmentation, ensuring they are appropriate for the skin type and concern: ${Object.keys(ingredientData).join(', ')}.
-Provide the routine in a clear, step-by-step format for morning and evening. Use markdown for formatting, like using '#' for headers, '*' for bullet points and '**' for bold. Make the response just to the point and easy to understand but not overwhelming yet interesting
+Provide the routine in a clear, step-by-step format for morning and evening. Use markdown for formatting, like using '###' for main routine headers (Morning/Evening/Notes), '####' for step headers (e.g., Cleanse, Treat), '*' for bullet points and '**' for bold. Make the response concise, easy to understand, and actionable.
+Always add at last "powered by Gemini-2.0"
+
 
 Example Output Format:
 ### Morning Routine
-* **Step 1: Cleanse** - Use a gentle, hydrating cleanser.
-* **Step 2: Treat** - Apply an antioxidant serum (like Vitamin C).
-* **Step 3: Moisturize** - Use a lightweight, non-comedogenic moisturizer.
-* **Step 4: Protect** - Apply a broad-spectrum sunscreen with SPF 50+.
+#### **Step 1: Cleanse** * Use a gentle, hydrating cleanser.
+#### **Step 2: Treat** * Apply an antioxidant serum (like Vitamin C).
+#### **Step 3: Moisturize** * Use a lightweight, non-comedogenic moisturizer.
+#### **Step 4: Protect** * Apply a broad-spectrum sunscreen with SPF 50+.
 
 ### Evening Routine
-* **Step 1: Cleanse** - Gently cleanse the skin.
-* **Step 2: Treat** - Apply a treatment serum (e.g., with Niacinamide or Azelaic Acid).
-* **Step 3: Moisturize** - Use a suitable moisturizer.
+#### **Step 1: Cleanse** * Gently cleanse the skin.
+#### **Step 2: Treat** * Apply a treatment serum (e.g., with Niacinamide or Azelaic Acid).
+#### **Step 3: Moisturize** * Use a suitable moisturizer.
 
 ### Important Notes
 * **Sunscreen is non-negotiable.** It's the most critical step to prevent further pigmentation.
 * **Introduce new active ingredients slowly** (e.g., 2-3 times a week initially) to assess tolerance.
 * **Consistency is key** to seeing results.
+__powered by Gemini-2.0__
 `;
 
                 try {
                     let chatHistory = [];
                     chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                     const payload = { contents: chatHistory };
-                    const apiKey = "AIzaSyBnlG3i_BSah-Xq4iRk6cBZhIUqgQYW9yU"; // API Key inserted here
+                    const apiKey = "AIzaSyBnlG3i_BSah-Xq4iRk6cBZhIUqgQYW9yU"; 
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                     const response = await fetch(apiUrl, {
@@ -1466,9 +1526,6 @@ Example Output Format:
                         if (errorData.error && errorData.error.message) {
                             errorMessage += `: ${errorData.error.message}`;
                         }
-                        if (response.status === 403) {
-                            errorMessage += " This often means the API key is invalid, not enabled for this API, or has billing issues.";
-                        }
                         throw new Error(errorMessage);
                     }
 
@@ -1479,23 +1536,38 @@ Example Output Format:
                         result.candidates[0].content.parts.length > 0) {
                         let text = result.candidates[0].content.parts[0].text;
                         
-                        text = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                        text = text.replace(/###\s*(.*)/g, '<h5 class="!mt-5 !mb-3 text-indigo-200">$1</h5>');
-                        text = text.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong class="text-indigo-300">$1</strong>');
-                        text = text.replace(/^\s*\*\s+(.*)/gm, '<li class="!mb-1.5 text-indigo-100">$1</li>');
-                        text = text.replace(/(\<ul>)?(<li>.*?<\/li>)+(\<\/ul>)?/g, (match, p1, p2, p3) => {
-                            if (p1 && p3) return match;
-                            return `<ul class="list-disc list-inside space-y-1.5">${match.match(/<li>.*?<\/li>/g).join('')}</ul>`;
+                        text = text.replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+                        text = text.replace(/####\s*(.*?)/g, '<h5 class="!mt-4 !mb-2 text-gray-200">$1</h5>'); 
+                        text = text.replace(/###\s*(.*)/g, '<h4 class="!mt-6 !mb-3 text-gray-100">$1</h4>'); 
+                        text = text.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong class="text-gray-100">$1</strong>'); 
+                        text = text.replace(/^\s*\*\s+(.*)/gm, '<li class="!mb-1.5 text-gray-300">$1</li>'); 
+                        text = text.replace(/(<\/h[45]>)(<li>.*?<\/li>)+/g, (match, header, listItems) => {
+                            return `${header}<ul class="list-disc list-inside space-y-1 mt-1 mb-2">${listItems.match(/<li>.*?<\/li>/g).join('')}</ul>`;
+                        });
+                         text = text.replace(/(\n\s*<li>.*?<\/li>)+/g, (match) => {
+                            return `<ul class="list-disc list-inside space-y-1 mt-1 mb-2">${match.match(/<li>.*?<\/li>/g).join('')}</ul>`;
                         });
 
-                        aiRoutineResult.innerHTML = `<h4 class="text-xl font-semibold mb-5 text-indigo-200">✨ Your AI Skincare Routine Suggestion:</h4><div class="prose max-w-none text-lg leading-relaxed">${text}</div>`;
+
+                        aiRoutineResult.innerHTML = `
+                            <div class="p-4 md:p-6"> 
+                                <h3 class="text-xl font-semibold mb-4 text-gray-100">✨ Your AI Skincare Routine Suggestion:</h3>
+                                <div class="prose-sm sm:prose max-w-none leading-relaxed text-gray-300">
+                                    ${text}
+                                </div>
+                            </div>
+                        `;
+                        aiRoutineResult.classList.remove('hidden'); 
+
                     } else {
                         console.error("Unexpected API response structure:", result);
-                        aiRoutineResult.innerHTML = '<p class="text-red-400 text-lg">Could not retrieve a suggestion at this time. The response from the AI was not in the expected format.</p>';
+                        aiRoutineResult.innerHTML = '<div class="p-4 md:p-6 text-red-400">Could not retrieve a suggestion. The AI returned an empty response.</div>';
+                        aiRoutineResult.classList.remove('hidden');
                     }
                 } catch (error) {
                     console.error('Error fetching AI routine:', error);
-                    aiRoutineResult.innerHTML = `<p class="text-red-400 text-lg">An error occurred while generating your routine: ${error.message}. Please try again later.</p>`;
+                    aiRoutineResult.innerHTML = `<div class="p-4 md:p-6 text-red-400">An error occurred while generating your routine: ${error.message}. Please try again later.</div>`;
+                    aiRoutineResult.classList.remove('hidden'); 
                 } finally {
                     aiLoadingSpinner.classList.add('hidden');
                     getAIRoutineBtn.disabled = false;
@@ -1508,7 +1580,7 @@ Example Output Format:
     function openDisorderTab(event, disorderName) {
         var i, tabcontent, tabbuttons;
         const understandingSection = document.getElementById("understanding");
-        if (!understandingSection) return;
+        if (!understandingSection) return; 
         tabcontent = understandingSection.getElementsByClassName("tab-content");
         for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
@@ -1523,7 +1595,7 @@ Example Output Format:
             targetTab.style.display = "block";
             targetTab.classList.add("active");
         }
-        if (event && event.currentTarget) {
+        if (event && event.currentTarget) { 
             event.currentTarget.classList.add("active");
         }
     }
